@@ -1,0 +1,11 @@
+{
+  "note": "실험 예산이다. 기능·수용 기준을 줄이는 근거로 쓰지 않는다. 수치는 측정 후에만 보고한다.",
+  "total_tokens_target": 10000000,
+  "phase_budget": {"api_calls": 25, "context_soft_cap": 200000},
+  "short_call_output_tokens": 700,
+  "visual_rounds_max": 2,
+  "pricing": {
+    "source": null,
+    "usd_per_mtok": {"input": null, "output": null, "cache_creation": null, "cache_read": null}
+  }
+}

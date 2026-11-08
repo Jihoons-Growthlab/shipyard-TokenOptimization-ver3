@@ -1,0 +1,6 @@
+prepared_at=2026-11-08T12:02:44+0900
+path=/Users/hoon/Desktop/personal_project/shipyard-TokenOptimization_ver3
+spec_source=/Users/hoon/Desktop/personal_project/shipyard-TokenOptimization_ver2
+specs_sha256=4cd0cc361948bc8085f58d51da97b70474ad2b88cc97fc5f6d3ab73648ebfc4a
+reference_sha256=712f1c16f9495e6984f5acf0ed130d3ddf274cd52b1d227a822e5dbf7a98bd71
+claude_version=2.1.319 (Claude Code)

@@ -1,0 +1,1248 @@
+{
+ "auth": {
+  "storage": "sessionStorage",
+  "key": "swp_token"
+ },
+ "flows": [
+  {
+   "name": "login",
+   "phase": "P2",
+   "ref": "login.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "wait": ".acard"
+    }
+   ]
+  },
+  {
+   "name": "login-error",
+   "phase": "P2",
+   "ref": "login-error.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "fill": [
+      "input[name=emp_no]",
+      "nouser"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=password]",
+      "wrongpass"
+     ]
+    },
+    {
+     "click": "button[type=submit]"
+    },
+    {
+     "expect": "아이디 또는 비밀번호가 올바르지 않습니다."
+    }
+   ]
+  },
+  {
+   "name": "signup",
+   "phase": "P2",
+   "ref": "signup.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "click": "text=회원가입"
+    },
+    {
+     "wait": "input[name=last_name]"
+    }
+   ]
+  },
+  {
+   "name": "otp",
+   "phase": "P2",
+   "ref": "otp.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "fill": [
+      "input[name=emp_no]",
+      "admin"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=password]",
+      "admin1234"
+     ]
+    },
+    {
+     "click": "button[type=submit]"
+    },
+    {
+     "wait": "input[name=code]"
+    }
+   ]
+  },
+  {
+   "name": "login-mobile",
+   "phase": "P2",
+   "ref": "login-mobile.png",
+   "viewport": [
+    390,
+    844
+   ],
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "fill": [
+      "input[name=emp_no]",
+      "nouser"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=password]",
+      "wrongpass"
+     ]
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "dashboard",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "dashboard.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "wait": ".kpi"
+    },
+    {
+     "wait": ".hp"
+    },
+    {
+     "expect": "샘플"
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "hull-list",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "hull-list.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=호선 목록"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "click": ".hull-table >> text=Blue Horizon 15K"
+    }
+   ]
+  },
+  {
+   "name": "hull-new",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "hull-new.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "click": "text=+ 호선 등록"
+    },
+    {
+     "wait": ".modal"
+    }
+   ]
+  },
+  {
+   "name": "hull-info",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "hull-info.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "click": ".hull-table tbody tr >> nth=0 >> .btn"
+    },
+    {
+     "wait": ".modal input[name=hull_nm]"
+    },
+    {
+     "wait": 400
+    }
+   ]
+  },
+  {
+   "name": "hull-milestones",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "hull-milestones.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".subtabs >> text=주요일정"
+    },
+    {
+     "wait": ".modal input[type=date]"
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "hull-blocks",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "hull-blocks.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".subtabs >> text=블록 구성"
+    },
+    {
+     "wait": ".modal .pbar"
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "hull-summary",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "hull-summary.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".subtabs >> text=연계 현황"
+    },
+    {
+     "expect": "전체 진척"
+    }
+   ]
+  },
+  {
+   "name": "plan-gantt",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "plan-gantt.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".mclose"
+    },
+    {
+     "click": ".menu >> text=공정 계획"
+    },
+    {
+     "wait": ".gbar"
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "plan-selected",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "plan-selected.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".glabel >> nth=9"
+    },
+    {
+     "wait": ".panel .lnk"
+    }
+   ]
+  },
+  {
+   "name": "plan-new",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "plan-new.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": "text=+ 공정 추가"
+    },
+    {
+     "expect": "저장한 뒤 이 공정에 도면을 연계할 수 있습니다."
+    }
+   ]
+  },
+  {
+   "name": "plan-drawing-wait",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "plan-drawing-wait.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "select": [
+      ".pg .hsel",
+      "8003"
+     ]
+    },
+    {
+     "wait": 500
+    },
+    {
+     "click": ".glabel >> nth=0"
+    },
+    {
+     "wait": ".note.warn"
+    }
+   ]
+  },
+  {
+   "name": "progress",
+   "phase": "P2",
+   "account": "admin",
+   "ref": "progress.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".menu >> text=공정 실적"
+    },
+    {
+     "wait": ".prog-table tbody tr"
+    },
+    {
+     "click": ".prog-table >> text=[401] 도장"
+    },
+    {
+     "wait": ".detail h4"
+    }
+   ]
+  },
+  {
+   "name": "readonly-hull-list",
+   "phase": "P2",
+   "account": "choi.qa",
+   "ref": "readonly-hull-list.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=호선 목록"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "expect": "조회 전용"
+    },
+    {
+     "expectNot": "+ 호선 등록"
+    }
+   ]
+  },
+  {
+   "name": "scn-hull-create-delete",
+   "phase": "P2",
+   "account": "park.pm",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=호선 목록"
+    },
+    {
+     "click": "text=+ 호선 등록"
+    },
+    {
+     "fill": [
+      ".modal input[name=hull_no]",
+      "9101"
+     ]
+    },
+    {
+     "fill": [
+      ".modal input[name=hull_nm]",
+      "Test Hull"
+     ]
+    },
+    {
+     "click": ".modal button[type=submit]"
+    },
+    {
+     "expect": "호선이 등록되었습니다."
+    },
+    {
+     "expect": "호선 9101"
+    },
+    {
+     "click": ".modal .btn.danger"
+    },
+    {
+     "expect": "삭제되었습니다."
+    },
+    {
+     "expectNot": "9101"
+    }
+   ]
+  },
+  {
+   "name": "scn-progress-save",
+   "phase": "P2",
+   "account": "park.pm",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=공정 실적"
+    },
+    {
+     "click": ".prog-table >> text=[401] 도장"
+    },
+    {
+     "fill": [
+      "input[name=progress_rate]",
+      "35"
+     ]
+    },
+    {
+     "click": "text=실적 저장"
+    },
+    {
+     "expect": "실적이 저장되었습니다."
+    },
+    {
+     "expect": "35%"
+    }
+   ]
+  },
+  {
+   "name": "scn-plan-late-pred",
+   "phase": "P2",
+   "account": "park.pm",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=공정 계획"
+    },
+    {
+     "wait": ".gbar"
+    },
+    {
+     "click": "text=+ 공정 추가"
+    },
+    {
+     "click": ".panel button[type=submit]"
+    },
+    {
+     "expect": "저장되었습니다."
+    },
+    {
+     "expect": "삭제"
+    }
+   ]
+  },
+  {
+   "name": "drawing-list",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "drawing-list.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=호선 목록"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "click": ".menu >> text=공정 계획"
+    },
+    {
+     "wait": ".gbar"
+    },
+    {
+     "click": ".menu >> text=공정 실적"
+    },
+    {
+     "wait": ".prog-table tbody tr"
+    },
+    {
+     "click": ".menu >> text=도면 목록"
+    },
+    {
+     "wait": ".dwg-table tbody tr"
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "drawing-new",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "drawing-new.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": "text=+ 도면 등록"
+    },
+    {
+     "wait": ".modal input[name=drawing_no]"
+    },
+    {
+     "wait": 400
+    }
+   ]
+  },
+  {
+   "name": "drawing-detail",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "drawing-detail.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".mclose"
+    },
+    {
+     "click": ".dwg-table tr:has-text('8001-PIPE-501') .btn"
+    },
+    {
+     "wait": ".rev-table tbody tr"
+    },
+    {
+     "wait": 500
+    }
+   ]
+  },
+  {
+   "name": "drawing-detail-draft",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "drawing-detail-draft.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".mclose"
+    },
+    {
+     "click": ".dwg-table tr:has-text('8002-PIPE-401') .btn"
+    },
+    {
+     "wait": ".modal .note.warn"
+    },
+    {
+     "wait": 500
+    }
+   ]
+  },
+  {
+   "name": "approvals",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "approvals.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".mclose"
+    },
+    {
+     "click": ".menu >> text=결재함"
+    },
+    {
+     "wait": ".apv-hist tbody tr"
+    },
+    {
+     "wait": 300
+    }
+   ]
+  },
+  {
+   "name": "users",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "users.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".menu >> text=회원관리"
+    },
+    {
+     "wait": ".user-table tbody tr"
+    },
+    {
+     "click": ".user-table >> text=jung.new"
+    },
+    {
+     "wait": "input[name=last_name]"
+    }
+   ]
+  },
+  {
+   "name": "users-new",
+   "phase": "P3",
+   "account": "admin",
+   "ref": "users-new.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".bar-row >> text=신규"
+    },
+    {
+     "wait": "input[name=emp_no]:not([readonly])"
+    }
+   ]
+  },
+  {
+   "name": "scn-dwg-request",
+   "phase": "P3",
+   "account": "admin",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=도면 목록"
+    },
+    {
+     "click": ".dwg-table tr:has-text('8002-PIPE-401') .btn"
+    },
+    {
+     "click": "text=결재 요청"
+    },
+    {
+     "expect": "결재가 요청되었습니다."
+    },
+    {
+     "expect": "결재 진행중입니다"
+    }
+   ]
+  },
+  {
+   "name": "scn-dwg-review",
+   "phase": "P3",
+   "account": "lee.dwg",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=결재함"
+    },
+    {
+     "click": ".apv-wait tr:has-text('8002-PIPE-401') .btn.ok"
+    },
+    {
+     "expect": "승인했습니다."
+    },
+    {
+     "wait": 31000
+    }
+   ]
+  },
+  {
+   "name": "scn-dwg-approve-issue",
+   "phase": "P3",
+   "account": "admin",
+   "viewport": [
+    1440,
+    901
+   ],
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=결재함"
+    },
+    {
+     "click": ".apv-wait tr:has-text('8002-PIPE-401') .btn.ok"
+    },
+    {
+     "expect": "승인했습니다."
+    },
+    {
+     "click": ".apv-ready tr:has-text('8002-PIPE-401') .btn.ok"
+    },
+    {
+     "expect": "도면이 배포되었습니다."
+    }
+   ]
+  },
+  {
+   "name": "scn-user-approve",
+   "phase": "P3",
+   "account": "admin",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=회원관리"
+    },
+    {
+     "click": ".user-table >> text=jung.new"
+    },
+    {
+     "select": [
+      "select[name=group]",
+      "PROC"
+     ]
+    },
+    {
+     "click": "text=가입 승인"
+    },
+    {
+     "expect": "정신입 님의 가입을 승인했습니다."
+    }
+   ]
+  },
+  {
+   "name": "scn-final-pending",
+   "phase": "P4",
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "fill": [
+      "input[name=emp_no]",
+      "jung.new"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=password]",
+      "new12345"
+     ]
+    },
+    {
+     "click": "button[type=submit]"
+    },
+    {
+     "expect": "관리자 승인 대기 중인 계정입니다."
+    }
+   ]
+  },
+  {
+   "name": "scn-final-signup",
+   "phase": "P4",
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "click": "text=회원가입"
+    },
+    {
+     "fill": [
+      "input[name=last_name]",
+      "김"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=first_name]",
+      "시험"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=birth_date]",
+      "1990-01-01"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=phone]",
+      "010-1234-5678"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=email]",
+      "kim.test@swp.example"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=new_emp_no]",
+      "kim.test"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=new_password]",
+      "test12345"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=password_confirm]",
+      "test12345"
+     ]
+    },
+    {
+     "click": "button[type=submit]"
+    },
+    {
+     "expect": "가입 신청 완료. 관리자 승인 후 로그인할 수 있습니다."
+    }
+   ]
+  },
+  {
+   "name": "hull-3d",
+   "phase": "P4",
+   "account": "admin",
+   "ref": "hull-3d.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=호선 목록"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "click": ".hull-table tbody tr >> nth=0 >> .btn"
+    },
+    {
+     "wait": ".modal input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": ".ucanvas"
+    },
+    {
+     "wait": 6000
+    },
+    {
+     "wait": ".views button:not([disabled])"
+    },
+    {
+     "wait": 2500
+    }
+   ]
+  },
+  {
+   "name": "ship-side",
+   "phase": "P4",
+   "account": "admin",
+   "ref": "ship-side.png",
+   "clip": ".viewer",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".views >> text=측면"
+    },
+    {
+     "wait": 3000
+    }
+   ]
+  },
+  {
+   "name": "ship-front",
+   "phase": "P4",
+   "account": "admin",
+   "ref": "ship-front.png",
+   "clip": ".viewer",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".views >> text=정면"
+    },
+    {
+     "wait": 3000
+    }
+   ]
+  },
+  {
+   "name": "ship-top",
+   "phase": "P4",
+   "account": "admin",
+   "ref": "ship-top.png",
+   "clip": ".viewer",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".views >> text=상단"
+    },
+    {
+     "wait": 3000
+    }
+   ]
+  },
+  {
+   "name": "3d-reset",
+   "phase": "P4",
+   "account": "admin",
+   "ref": "hull-3d.png",
+   "threshold": 0.08,
+   "steps": [
+    {
+     "click": ".views >> text=초기화"
+    },
+    {
+     "wait": 3000
+    }
+   ]
+  },
+  {
+   "name": "scn-3d-cycle",
+   "phase": "P4",
+   "account": "admin",
+   "steps": [
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 1500
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 150
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 1500
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 150
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 1500
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 150
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 1500
+    },
+    {
+     "click": ".subtabs >> text=기본정보"
+    },
+    {
+     "wait": "input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": 150
+    },
+    {
+     "wait": ".ucanvas"
+    },
+    {
+     "wait": 6000
+    },
+    {
+     "wait": ".views button:not([disabled])"
+    },
+    {
+     "wait": 2500
+    },
+    {
+     "expect": "Demo Ship 01"
+    },
+    {
+     "press": [
+      ".modal .views button >> nth=0",
+      "Escape"
+     ]
+    },
+    {
+     "expectNot": "샘플 호선 3D 뷰어"
+    }
+   ]
+  },
+  {
+   "name": "scn-final-approve",
+   "phase": "P4",
+   "account": "admin",
+   "steps": [
+    {
+     "click": ".menu >> text=회원관리"
+    },
+    {
+     "wait": ".user-table tbody tr"
+    },
+    {
+     "click": ".user-table >> text=kim.test"
+    },
+    {
+     "select": [
+      "select[name=group]",
+      "PROC"
+     ]
+    },
+    {
+     "click": "text=가입 승인"
+    },
+    {
+     "expect": "가입을 승인했습니다"
+    }
+   ]
+  },
+  {
+   "name": "scn-final-login-new",
+   "phase": "P4",
+   "viewport": [
+    1440,
+    901
+   ],
+   "steps": [
+    {
+     "goto": "/login"
+    },
+    {
+     "fill": [
+      "input[name=emp_no]",
+      "kim.test"
+     ]
+    },
+    {
+     "fill": [
+      "input[name=password]",
+      "test12345"
+     ]
+    },
+    {
+     "click": "button[type=submit]"
+    },
+    {
+     "wait": ".menu"
+    },
+    {
+     "expect": "김시험"
+    }
+   ]
+  },
+  {
+   "name": "scn-final-plan-link",
+   "phase": "P4",
+   "account": "park.pm",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=공정 계획"
+    },
+    {
+     "wait": ".gbar"
+    },
+    {
+     "select": [
+      ".pg .hsel",
+      "8001"
+     ]
+    },
+    {
+     "wait": 500
+    },
+    {
+     "click": "text=+ 공정 추가"
+    },
+    {
+     "click": ".panel button[type=submit]"
+    },
+    {
+     "expect": "저장되었습니다."
+    },
+    {
+     "select": [
+      "select[aria-label='도면 선택']",
+      "1"
+     ]
+    },
+    {
+     "click": "text=+ 연계"
+    },
+    {
+     "wait": ".links tbody tr:has-text('8001-HULL-101')"
+    }
+   ]
+  },
+  {
+   "name": "scn-final-progress-done",
+   "phase": "P4",
+   "account": "park.pm",
+   "steps": [
+    {
+     "click": ".menu >> text=공정 실적"
+    },
+    {
+     "click": ".prog-table >> text=[401] 도장"
+    },
+    {
+     "fill": [
+      "input[name=progress_rate]",
+      "100"
+     ]
+    },
+    {
+     "click": "text=실적 저장"
+    },
+    {
+     "expect": "실적 저장 — 공정이 완료 처리되었습니다."
+    }
+   ]
+  },
+  {
+   "name": "scn-3d-readonly",
+   "phase": "P4",
+   "account": "choi.qa",
+   "steps": [
+    {
+     "goto": "/"
+    },
+    {
+     "click": ".menu >> text=호선 목록"
+    },
+    {
+     "wait": ".hull-table tbody tr"
+    },
+    {
+     "click": ".hull-table tbody tr >> nth=0 >> .btn"
+    },
+    {
+     "wait": ".modal input[name=hull_nm]"
+    },
+    {
+     "click": ".subtabs >> text=3D 보기"
+    },
+    {
+     "wait": ".ucanvas"
+    },
+    {
+     "wait": 6000
+    },
+    {
+     "wait": ".views button:not([disabled])"
+    },
+    {
+     "wait": 2500
+    },
+    {
+     "expect": "예시 모델 — 실제 호선 형상과 다름"
+    }
+   ]
+  }
+ ]
+}

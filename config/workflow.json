@@ -1,0 +1,58 @@
+{
+  "launch": {
+    "command": ["claude", "--model", "claude-opus-5-5", "--effort", "medium", "--permission-mode", "auto", "--strict-mcp-config"],
+    "env": {"ENABLE_CLAUDEAI_MCP_SERVERS": "false"},
+    "prompt": "/build",
+    "active_minutes": 15
+  },
+  "env_checks": {
+    "node": ["node", "-v"],
+    "npm": ["npm", "-v"],
+    "uv": ["uv", "--version"],
+    "chrome": ["test", "-d", "/Applications/Google Chrome.app"],
+    "unity": ["test", "-x", "/Applications/Unity/Hub/Editor/6000.5.10f1/Unity.app/Contents/MacOS/Unity"],
+    "unity_webgl": ["test", "-d", "/Applications/Unity/Hub/Editor/6000.5.10f1/PlaybackEngines/WebGLSupport"]
+  },
+  "verify": {
+    "backend": {"cwd": "backend", "cmd": ["uv", "run", "pytest", "-q", "-p", "no:cacheprovider"], "parser": "pytest", "timeout": 900},
+    "frontend": {"cwd": "frontend", "cmd": ["npx", "vitest", "run"], "parser": "vitest", "timeout": 900},
+    "build": {"cwd": "frontend", "cmd": ["npx", "vite", "build"], "parser": "generic", "timeout": 600},
+    "unity": {
+      "cwd": ".",
+      "cmd": ["/Applications/Unity/Hub/Editor/6000.5.10f1/Unity.app/Contents/MacOS/Unity", "-batchmode", "-quit", "-buildTarget", "WebGL",
+              "-projectPath", "unity/ShipyardViewer", "-executeMethod", "ViewerBuild.Build", "-logFile", "-"],
+      "parser": "unity", "timeout": 3600
+    },
+    "all": ["backend", "frontend", "build"]
+  },
+  "dev": {
+    "seed": {"cwd": "backend", "cmd": ["uv", "run", "init-db", "--seed"]},
+    "services": {
+      "backend": {"cwd": "backend", "cmd": ["uv", "run", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "8000"],
+                  "port": 8000, "health": "http://127.0.0.1:8000/api/health"},
+      "frontend": {"cwd": "frontend", "cmd": ["npx", "vite", "--host", "127.0.0.1", "--port", "5173", "--strictPort"],
+                   "port": 5173, "health": "http://127.0.0.1:5173/"}
+    },
+    "fresh_env": {"SHIPYARD_DB_PATH": "state/run/fresh.db", "SHIPYARD_FILE_DIR": "state/run/files"},
+    "health_timeout": 60
+  },
+  "shots": {
+    "base_url": "http://127.0.0.1:5173",
+    "refs": "reference/ui",
+    "seed": "reference/seed/seed.json",
+    "flows": "state/shots.json",
+    "out": "reports/shots",
+    "browser_channel": "chrome",
+    "default_viewport": [1440, 900],
+    "pixel_tolerance": 32,
+    "threshold": 0.08,
+    "step_timeout_ms": 10000
+  },
+  "srcmap": {
+    "out": "state/SOURCEMAP.md",
+    "roots": ["backend/app", "backend/tests", "frontend/src", "unity/ShipyardViewer/Assets"],
+    "openapi_cmd": {"cwd": "backend", "cmd": ["uv", "run", "python", "-c", "import json; from app.main import app; print(json.dumps(app.openapi()))"], "timeout": 60},
+    "max_bytes": 14000
+  },
+  "progress": {"file": "state/PROGRESS.md", "max_lines": 40}
+}

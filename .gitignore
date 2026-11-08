@@ -1,0 +1,26 @@
+node_modules/
+dist/
+.vite/
+.venv/
+__pycache__/
+.pytest_cache/
+*.log
+.DS_Store
+.env
+database/*.db
+database/*.db-*
+storage/
+frontend/public/unity/
+unity/*/Library/
+unity/*/Temp/
+unity/*/Obj/
+unity/*/Logs/
+unity/*/UserSettings/
+unity/*/Build/
+unity/*/Builds/
+unity/*/*.csproj
+unity/*/*.sln
+# 워크플로 산출물
+state/run/
+reports/
+.claude/settings.local.json

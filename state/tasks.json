@@ -1,0 +1,453 @@
+{
+  "phases": [
+    {
+      "id": "P1",
+      "title": "백엔드 전체: 구성·스키마·시드·인증·전 기능 API",
+      "checkpoint": [
+        "backend"
+      ],
+      "shots": false,
+      "notes": "frontend는 Vite 골격과 API 클라이언트만 만든다(화면은 P2). 끝나면 SOURCEMAP의 API 계약이 P2·P3의 입력이다."
+    },
+    {
+      "id": "P2",
+      "title": "화면 1: 인증·공통 셸·호선·공정 계획·실적",
+      "checkpoint": [
+        "frontend",
+        "build"
+      ],
+      "shots": true,
+      "notes": "백엔드 코드는 읽지 않고 SOURCEMAP의 API 계약과 명세를 쓴다. 공유 컴포넌트는 이 단계에서 확정한다."
+    },
+    {
+      "id": "P3",
+      "title": "화면 2: 도면·결재·회원관리·대시보드",
+      "checkpoint": [
+        "frontend",
+        "build"
+      ],
+      "shots": true,
+      "notes": "P2 공유 컴포넌트를 SOURCEMAP에서 찾아 재사용한다."
+    },
+    {
+      "id": "P4",
+      "title": "Unity 뷰어와 최종 수용 검증",
+      "checkpoint": [
+        "all"
+      ],
+      "shots": true,
+      "notes": "Unity 빌드 진입점은 Editor 스크립트의 ViewerBuild.Build다(config/workflow.json). 수용 시나리오는 state/shots.json의 흐름으로 작성해 fresh DB에서 실행한다."
+    }
+  ],
+  "tasks": {
+    "T01": {
+      "phase": "P1",
+      "step": 1,
+      "title": "프로젝트 구성, 스키마, 시드",
+      "specs": [
+        "specs/foundation.md",
+        "specs/data-model.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T02": {
+      "phase": "P1",
+      "step": 2,
+      "title": "인증 API",
+      "specs": [
+        "specs/F01.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T03": {
+      "phase": "P1",
+      "step": 3,
+      "title": "메뉴·날씨·공통 코드 API",
+      "specs": [
+        "specs/F02.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T04": {
+      "phase": "P1",
+      "step": 4,
+      "title": "호선 API",
+      "specs": [
+        "specs/F04.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T05": {
+      "phase": "P1",
+      "step": 5,
+      "title": "공정 계획 API",
+      "specs": [
+        "specs/F05.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T06": {
+      "phase": "P1",
+      "step": 6,
+      "title": "공정 실적 API",
+      "specs": [
+        "specs/F06.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T07": {
+      "phase": "P1",
+      "step": 7,
+      "title": "도면 API",
+      "specs": [
+        "specs/F07.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T08": {
+      "phase": "P1",
+      "step": 8,
+      "title": "결재 API",
+      "specs": [
+        "specs/F08.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T09": {
+      "phase": "P1",
+      "step": 9,
+      "title": "회원관리 API",
+      "specs": [
+        "specs/F09.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T10": {
+      "phase": "P1",
+      "step": 10,
+      "title": "대시보드 API",
+      "specs": [
+        "specs/F03.md",
+        "specs/rules.md"
+      ],
+      "images": [],
+      "verify": [
+        "backend"
+      ]
+    },
+    "T11": {
+      "phase": "P2",
+      "step": 2,
+      "title": "인증 화면",
+      "specs": [
+        "specs/F01.md"
+      ],
+      "images": [
+        "login",
+        "login-error",
+        "signup",
+        "otp",
+        "login-mobile"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T12": {
+      "phase": "P2",
+      "step": 3,
+      "title": "공통 셸·디자인·날씨",
+      "specs": [
+        "specs/F02.md",
+        "specs/ui.md"
+      ],
+      "images": [
+        "dashboard"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T13": {
+      "phase": "P2",
+      "step": 4,
+      "title": "호선 화면",
+      "specs": [
+        "specs/F04.md"
+      ],
+      "images": [
+        "hull-list",
+        "hull-new",
+        "hull-info",
+        "hull-milestones",
+        "hull-blocks",
+        "hull-summary",
+        "readonly-hull-list"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T14": {
+      "phase": "P2",
+      "step": 5,
+      "title": "공정 계획 화면",
+      "specs": [
+        "specs/F05.md"
+      ],
+      "images": [
+        "plan-gantt",
+        "plan-selected",
+        "plan-new",
+        "plan-drawing-wait"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T15": {
+      "phase": "P2",
+      "step": 6,
+      "title": "공정 실적 화면",
+      "specs": [
+        "specs/F06.md"
+      ],
+      "images": [
+        "progress"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T16": {
+      "phase": "P3",
+      "step": 7,
+      "title": "도면 화면",
+      "specs": [
+        "specs/F07.md"
+      ],
+      "images": [
+        "drawing-list",
+        "drawing-new",
+        "drawing-detail",
+        "drawing-detail-draft"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T17": {
+      "phase": "P3",
+      "step": 8,
+      "title": "결재 화면",
+      "specs": [
+        "specs/F08.md"
+      ],
+      "images": [
+        "approvals"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T18": {
+      "phase": "P3",
+      "step": 9,
+      "title": "회원관리 화면",
+      "specs": [
+        "specs/F09.md"
+      ],
+      "images": [
+        "users",
+        "users-new"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T19": {
+      "phase": "P3",
+      "step": 10,
+      "title": "대시보드 화면",
+      "specs": [
+        "specs/F03.md"
+      ],
+      "images": [
+        "dashboard"
+      ],
+      "verify": [
+        "frontend"
+      ]
+    },
+    "T20": {
+      "phase": "P4",
+      "step": 11,
+      "title": "Unity 뷰어와 3D 탭",
+      "specs": [
+        "specs/F10.md"
+      ],
+      "images": [
+        "hull-3d",
+        "ship-side",
+        "ship-front",
+        "ship-top"
+      ],
+      "verify": [
+        "unity",
+        "frontend"
+      ]
+    },
+    "T21": {
+      "phase": "P4",
+      "step": 12,
+      "title": "최종 수용 검증",
+      "specs": [
+        "specs/index.md"
+      ],
+      "images": [],
+      "verify": [
+        "all"
+      ]
+    }
+  },
+  "status": {
+    "T01": {
+      "state": "done",
+      "at": "2026-11-08T12:11:03+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T02": {
+      "state": "done",
+      "at": "2026-11-08T12:11:03+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T03": {
+      "state": "done",
+      "at": "2026-11-08T12:11:04+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T04": {
+      "state": "done",
+      "at": "2026-11-08T12:15:53+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T05": {
+      "state": "done",
+      "at": "2026-11-08T12:15:53+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T06": {
+      "state": "done",
+      "at": "2026-11-08T12:15:53+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T07": {
+      "state": "done",
+      "at": "2026-11-08T12:21:20+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T08": {
+      "state": "done",
+      "at": "2026-11-08T12:21:20+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T09": {
+      "state": "done",
+      "at": "2026-11-08T12:21:20+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T10": {
+      "state": "done",
+      "at": "2026-11-08T12:21:20+09:00",
+      "session": "e37c4d36-c7f9-4130-b3cd-017807cf6a02"
+    },
+    "T11": {
+      "state": "done",
+      "at": "2026-11-08T12:49:41+09:00",
+      "session": "7806b69b-9caf-437d-9eb1-f1bc83c8fd2c"
+    },
+    "T12": {
+      "state": "done",
+      "at": "2026-11-08T12:49:41+09:00",
+      "session": "7806b69b-9caf-437d-9eb1-f1bc83c8fd2c"
+    },
+    "T13": {
+      "state": "done",
+      "at": "2026-11-08T12:49:41+09:00",
+      "session": "7806b69b-9caf-437d-9eb1-f1bc83c8fd2c"
+    },
+    "T14": {
+      "state": "done",
+      "at": "2026-11-08T12:49:41+09:00",
+      "session": "7806b69b-9caf-437d-9eb1-f1bc83c8fd2c"
+    },
+    "T15": {
+      "state": "done",
+      "at": "2026-11-08T12:49:41+09:00",
+      "session": "7806b69b-9caf-437d-9eb1-f1bc83c8fd2c"
+    },
+    "T16": {
+      "state": "done",
+      "at": "2026-11-08T12:57:45+09:00",
+      "session": "1169bc7a-fa83-44d1-9260-6a4e51f74a54"
+    },
+    "T17": {
+      "state": "done",
+      "at": "2026-11-08T13:00:02+09:00",
+      "session": "1169bc7a-fa83-44d1-9260-6a4e51f74a54"
+    },
+    "T18": {
+      "state": "done",
+      "at": "2026-11-08T13:00:02+09:00",
+      "session": "1169bc7a-fa83-44d1-9260-6a4e51f74a54"
+    },
+    "T19": {
+      "state": "done",
+      "at": "2026-11-08T13:00:02+09:00",
+      "session": "1169bc7a-fa83-44d1-9260-6a4e51f74a54"
+    },
+    "T20": {
+      "state": "done",
+      "at": "2026-11-08T13:25:03+09:00",
+      "session": "b0b5ae00-5aa2-459e-8fe3-c97b7d9b1ee7"
+    },
+    "T21": {
+      "state": "done",
+      "at": "2026-11-08T13:25:12+09:00",
+      "session": "b0b5ae00-5aa2-459e-8fe3-c97b7d9b1ee7"
+    }
+  }
+}

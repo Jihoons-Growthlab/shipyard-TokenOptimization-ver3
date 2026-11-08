@@ -1,0 +1,56 @@
+{
+  "period": {
+    "start": "2026-11-08T03:03:23.130Z",
+    "end": "2026-11-08T04:28:16.791Z"
+  },
+  "sessions": [
+    {
+      "id": "1169bc7a",
+      "input_tokens": 52,
+      "output_tokens": 64499,
+      "cache_creation_input_tokens": 148985,
+      "cache_read_input_tokens": 2960896
+    },
+    {
+      "id": "7806b69b",
+      "input_tokens": 34,
+      "output_tokens": 79162,
+      "cache_creation_input_tokens": 180088,
+      "cache_read_input_tokens": 2041510
+    },
+    {
+      "id": "b0b5ae00",
+      "input_tokens": 58,
+      "output_tokens": 56334,
+      "cache_creation_input_tokens": 117836,
+      "cache_read_input_tokens": 3018439
+    },
+    {
+      "id": "e37c4d36",
+      "input_tokens": 40,
+      "output_tokens": 142552,
+      "cache_creation_input_tokens": 212848,
+      "cache_read_input_tokens": 2575035
+    }
+  ],
+  "models": {
+    "claude-opus-5-5": 92
+  },
+  "total": {
+    "input_tokens": 184,
+    "output_tokens": 342547,
+    "cache_creation_input_tokens": 659757,
+    "cache_read_input_tokens": 10595880,
+    "api_calls": 92,
+    "sum_all": 11598368
+  },
+  "prompts": [],
+  "skills": {},
+  "mcp": {},
+  "tools": {
+    "Write": 88,
+    "Bash": 79,
+    "Read": 50,
+    "Edit": 15
+  }
+}
