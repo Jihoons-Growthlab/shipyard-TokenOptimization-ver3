@@ -1,3 +1,4 @@
+from app import config
 from app.db import connect, migrate, scalar
 from app.seed import load_seed, main as init_db
 
@@ -26,7 +27,7 @@ def test_init_db_idempotent(db, capsys):
     assert init_db(["--seed"]) == 0
     assert migrate(db) == []
     assert count(db, "TB_PRC_Plan") == before and count(db, "users") == 6
-    assert scalar(db, "SELECT COUNT(*) FROM schema_migrations") == 1
+    assert scalar(db, "SELECT COUNT(*) FROM schema_migrations") == len(list(config.MIGRATIONS_DIR.glob("[0-9]*_*.sql")))
 
 
 def test_fresh_db_from_cli(tmp_path, monkeypatch):

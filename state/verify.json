@@ -1,24 +1,24 @@
 {
   "backend": {
     "ok": true,
-    "ts": "2026-11-08T13:25:10+09:00",
+    "ts": "2026-11-13T19:27:10+09:00",
     "args": [],
-    "summary": "86 passed, 1 warning in 6.58s",
-    "log": "reports/logs/20261108-132503-backend.log"
+    "summary": "94 passed, 1 warning in 8.85s",
+    "log": "reports/logs/20261113-192701-backend.log"
   },
   "frontend": {
     "ok": true,
-    "ts": "2026-11-08T13:25:11+09:00",
+    "ts": "2026-11-13T19:27:51+09:00",
     "args": [],
-    "summary": "Test Files  7 passed (7) | Tests  40 passed (40)",
-    "log": "reports/logs/20261108-132510-frontend.log"
+    "summary": "Test Files  7 passed (7) | Tests  43 passed (43)",
+    "log": "reports/logs/20261113-192749-frontend.log"
   },
   "build": {
     "ok": true,
-    "ts": "2026-11-08T13:25:12+09:00",
+    "ts": "2026-11-13T19:27:51+09:00",
     "args": [],
     "summary": "",
-    "log": "reports/logs/20261108-132511-build.log"
+    "log": "reports/logs/20261113-192751-build.log"
   },
   "unity": {
     "ok": true,

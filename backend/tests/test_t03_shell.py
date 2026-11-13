@@ -5,7 +5,8 @@ from app.services import shell
 def test_shell_t01_menu_by_group(client, auth):
     menu = client.get("/api/me/menu", headers=auth("park.pm")).json()
     ids = [m["menu_id"] for m in menu]
-    assert ids == ["M00", "M10", "M11", "M20", "M21", "M22", "M30", "M31"]
+    # M95 건의·문의는 명세 외 요청으로 추가된 메뉴(모든 그룹 쓰기)
+    assert ids == ["M00", "M10", "M11", "M20", "M21", "M22", "M30", "M31", "M95"]
     m11 = next(m for m in menu if m["menu_id"] == "M11")
     assert m11 == {"menu_id": "M11", "parent_id": "M10", "title": "호선 목록", "token": "hull-list", "seq": 3,
                    "level": 2, "auth_gbn": "Write", "can_write": True}
@@ -14,7 +15,7 @@ def test_shell_t01_menu_by_group(client, auth):
     dwg = [m["menu_id"] for m in client.get("/api/me/menu", headers=auth("lee.dwg")).json()]
     assert "M22" not in dwg and "M33" in dwg
     admin = [m["menu_id"] for m in client.get("/api/me/menu", headers=auth("admin")).json()]
-    assert len(admin) == 11
+    assert len(admin) == 13  # + M92 사용 로그, M95 건의·문의(명세 외 요청)
 
 
 def test_shell_t01_hidden_parent_hides_child(client, auth, db):

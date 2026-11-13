@@ -4,17 +4,14 @@ from typing import Callable
 from .. import config
 from ..db import rows, tx
 from ..errors import bad, forbidden
-from .common import LEVEL_NAMES, VIEW, WRITE, menu_level, now_utc
+from .common import LEVEL_NAMES, VIEW, WRITE, menu_level, menu_levels, now_utc
 
 
 def my_menu(conn, emp_no: str) -> list[dict]:
-    items = rows(conn, """
-        SELECT m.MenuId, m.ParentId, m.Title, m.TokenUrl, m.Seq,
-               MAX(CASE a.AuthGbn WHEN 'Admin' THEN 3 WHEN 'Write' THEN 2 WHEN 'View' THEN 1 ELSE 0 END) lvl
-        FROM TB_SYS_MenuInfo m
-        JOIN TB_SYS_AuthMenu a ON a.MenuId=m.MenuId
-        JOIN TB_SYS_AuthUser u ON u.AuthCd=a.AuthCd AND u.EmpNo=?
-        WHERE m.UseYN=1 GROUP BY m.MenuId ORDER BY m.Seq, m.MenuId""", emp_no)
+    levels = menu_levels(conn, emp_no)
+    items = [{**r, "lvl": levels.get(r["MenuId"], 0)} for r in rows(
+        conn, "SELECT MenuId, ParentId, Title, TokenUrl, Seq FROM TB_SYS_MenuInfo WHERE UseYN=1 ORDER BY Seq, MenuId")]
+    items = [r for r in items if r["lvl"] > 0]
     by_id = {r["MenuId"]: r for r in items}
 
     def visible(r, seen=()):

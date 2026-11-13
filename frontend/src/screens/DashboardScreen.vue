@@ -1,6 +1,12 @@
 <template>
   <div class="dash">
     <PageHead title="대시보드" :desc="`기준일 ${s?.today || session.me?.today || ''} · 호선/공정/도면 현황`" />
+    <section v-if="workflow.length" class="card workflow" aria-label="업무 흐름">
+      <h3>업무 흐름</h3>
+      <div class="workflow-links">
+        <button v-for="step in workflow" :key="step.id" type="button" class="btn" @click="openManual(step.id)">{{ step.label }}</button>
+      </div>
+    </section>
     <template v-if="s">
       <div class="kpis">
         <div v-for="k in kpis" :key="k.key" class="card kpi" @click="go(k.link, k.screen)">
@@ -94,6 +100,14 @@ import StatusBadge from '../components/StatusBadge.vue'
 import DrawingDetail from './DrawingDetail.vue'
 
 defineProps({ token: String, param: [String, Number], ctx: Number, canWrite: Boolean, title: String })
+const openManual = inject('openManual', () => {})
+const workflow = computed(() => [
+  { id: 'hull-list', label: '호선 확인' },
+  { id: 'plan-gantt', label: '공정계획' },
+  { id: 'progress', label: '실적 입력' },
+  { id: 'dwg-list', label: '도면 관리' },
+  { id: 'dwg-approval', label: '도면 결재' },
+].filter(step => menuByToken(step.id)))
 const navigate = inject('navigate', () => {})
 
 const PLAN_COLOR = { PLAN: '#94a3b8', READY: '#0ea5e9', WORK: '#2563eb', DONE: '#16a34a', DELAY: '#dc2626' }
@@ -137,20 +151,30 @@ onMounted(load)
 </script>
 
 <style scoped>
+.workflow { margin-bottom: 12px; padding: 10px 12px; }
+.workflow h3 { margin: 0 0 8px; font-size: 14px; }
+.workflow-links { display: flex; flex-wrap: wrap; gap: 6px; }
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
-.kpi { margin: 0; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
-.kpi:hover { border-color: var(--pri); }
+.kpi { margin: 0; cursor: pointer; display: flex; flex-direction: column; gap: 2px; position: relative; overflow: hidden;
+  transition: border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), transform var(--t-med) var(--ease); animation: rise-in .4s var(--ease) both; }
+.kpi:nth-child(2) { animation-delay: .04s; } .kpi:nth-child(3) { animation-delay: .08s; } .kpi:nth-child(4) { animation-delay: .12s; }
+.kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--pri); opacity: .7; }
+.kpi:hover { border-color: var(--pri); box-shadow: var(--shadow-md); transform: translateY(-2px); }
 .kpi span { font-size: 12px; color: var(--muted); }
 .kpi b { font-size: 26px; font-weight: 700; line-height: 1.2; }
 .kpi b.err { color: var(--err); }
 .kpi b.warn { color: var(--warn); }
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
 .grid3 .card { margin: 0; min-width: 0; }
-.hp { display: grid; grid-template-columns: 130px 1fr 44px; gap: 8px; align-items: center; padding: 3px 0; cursor: pointer; }
+.hp { display: grid; grid-template-columns: 130px 1fr 44px; gap: 8px; align-items: center; padding: 3px 6px; margin: 0 -6px; cursor: pointer; border-radius: 6px; transition: background var(--t-fast); }
 .hp:hover { background: var(--hover); }
+.hp:hover .hbar i { filter: brightness(1.08); }
 .ell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hbar { height: 14px; border-radius: 7px; background: #e5e7eb; overflow: hidden; }
-.hbar i { display: block; height: 100%; background: var(--pri); }
+.hbar { height: 12px; border-radius: 6px; background: #e8ecf2; overflow: hidden; box-shadow: inset 0 1px 2px rgba(15, 23, 42, .08); }
+.hbar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #60a5fa, var(--pri)); transform-origin: left; animation: grow-x var(--t-slow) var(--ease) both; }
+.hp:nth-child(3) .hbar i { animation-delay: .05s; } .hp:nth-child(4) .hbar i { animation-delay: .1s; } .hp:nth-child(5) .hbar i { animation-delay: .15s; } .hp:nth-child(n+6) .hbar i { animation-delay: .2s; }
+.donut svg circle + circle { animation: fade-in .6s var(--ease) both; transition: stroke-width var(--t-fast); }
+.donut svg circle + circle:hover { stroke-width: 26; }
 .donut { display: flex; align-items: center; gap: 24px; }
 .dt { font-size: 20px; font-weight: 700; fill: var(--ink); }
 .ds { font-size: 10px; fill: var(--muted); }
@@ -158,14 +182,16 @@ onMounted(load)
 .legend.row { flex-direction: row; gap: 12px; margin-top: 10px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
 .disc { margin-bottom: 8px; font-size: 12px; }
-.stack { display: flex; height: 16px; border-radius: 3px; overflow: hidden; background: #e5e7eb; margin-top: 4px; }
-.stack i { display: block; }
+.stack { display: flex; gap: 2px; height: 14px; border-radius: 7px; overflow: hidden; background: #e8ecf2; margin-top: 4px; transform-origin: left; animation: grow-x var(--t-slow) var(--ease) both; }
+.stack i { display: block; transition: filter var(--t-fast); }
+.stack i:hover { filter: brightness(1.12); }
 .months { height: 130px; display: flex; align-items: flex-end; justify-content: space-around; gap: 8px; }
 .mon { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; }
-.mon i { display: block; width: 44px; background: var(--navy2); }
+.mon i { display: block; width: 36px; border-radius: 6px 6px 2px 2px; background: linear-gradient(180deg, #3b82f6, var(--navy2)); transform-origin: bottom; animation: grow-y var(--t-slow) var(--ease) both; transition: filter var(--t-fast); }
+.mon:hover i { filter: brightness(1.15); }
 .mv { font-size: 11px; font-weight: 600; }
 .ml { color: var(--muted); }
-.li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 4px; border-bottom: 1px solid var(--line2); cursor: pointer; }
+.li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 4px; border-bottom: 1px solid var(--line2); cursor: pointer; transition: background var(--t-fast); }
 .li:last-of-type { border-bottom: 0; }
 .li:hover { background: var(--hover); }
 .li .muted { font-size: 12px; white-space: nowrap; }

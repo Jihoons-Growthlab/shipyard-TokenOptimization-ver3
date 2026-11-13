@@ -1,418 +1,151 @@
 {
-  "ts": "2026-11-08T04:27:47.752+00:00",
-  "ok": false,
+  "ts": "2026-11-13T11:43:18.656+00:00",
+  "ok": true,
   "phases": [
-    "P2",
-    "P3",
-    "P4"
+    "REF"
   ],
   "results": [
     {
-      "name": "login",
-      "phase": "P2",
-      "ref": "login.png",
-      "file": "reports/shots/login.png",
-      "diff": 0.049,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "login-error",
-      "phase": "P2",
-      "ref": "login-error.png",
-      "file": "reports/shots/login-error.png",
-      "diff": 0.05,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "signup",
-      "phase": "P2",
-      "ref": "signup.png",
-      "file": "reports/shots/signup.png",
-      "diff": 0.1084,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "over"
-    },
-    {
-      "name": "otp",
-      "phase": "P2",
-      "ref": "otp.png",
-      "file": "reports/shots/otp.png",
-      "diff": 0.0411,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "scn-final-pending",
-      "phase": "P4",
+      "name": "ref-dashboard",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-final-pending.png",
+      "file": "reports/shots/ref-dashboard.png",
       "status": "pass"
     },
     {
-      "name": "scn-final-signup",
-      "phase": "P4",
+      "name": "ref-hull-list",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-final-signup.png",
+      "file": "reports/shots/ref-hull-list.png",
       "status": "pass"
     },
     {
-      "name": "login-mobile",
-      "phase": "P2",
-      "ref": "login-mobile.png",
-      "file": "reports/shots/login-mobile.png",
-      "diff": 0.0216,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "dashboard",
-      "phase": "P3",
-      "ref": "dashboard.png",
-      "file": "reports/shots/dashboard.png",
-      "diff": 0.0428,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "hull-list",
-      "phase": "P2",
-      "ref": "hull-list.png",
-      "file": "reports/shots/hull-list.png",
-      "diff": 0.0266,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "hull-new",
-      "phase": "P2",
-      "ref": "hull-new.png",
-      "file": "reports/shots/hull-new.png",
-      "diff": 0.0116,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "hull-info",
-      "phase": "P2",
-      "ref": "hull-info.png",
-      "file": "reports/shots/hull-info.png",
-      "diff": 0.0359,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "hull-milestones",
-      "phase": "P2",
-      "ref": "hull-milestones.png",
-      "file": "reports/shots/hull-milestones.png",
-      "diff": 0.0258,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "hull-blocks",
-      "phase": "P2",
-      "ref": "hull-blocks.png",
-      "file": "reports/shots/hull-blocks.png",
-      "diff": 0.032,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "hull-summary",
-      "phase": "P2",
-      "ref": "hull-summary.png",
-      "file": "reports/shots/hull-summary.png",
-      "diff": 0.0359,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "plan-gantt",
-      "phase": "P2",
-      "ref": "plan-gantt.png",
-      "file": "reports/shots/plan-gantt.png",
-      "diff": 0.0448,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "plan-selected",
-      "phase": "P2",
-      "ref": "plan-selected.png",
-      "file": "reports/shots/plan-selected.png",
-      "diff": 0.0438,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "plan-new",
-      "phase": "P2",
-      "ref": "plan-new.png",
-      "file": "reports/shots/plan-new.png",
-      "diff": 0.0387,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "plan-drawing-wait",
-      "phase": "P2",
-      "ref": "plan-drawing-wait.png",
-      "file": "reports/shots/plan-drawing-wait.png",
-      "diff": 0.0527,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "progress",
-      "phase": "P2",
-      "ref": "progress.png",
-      "file": "reports/shots/progress.png",
-      "diff": 0.0389,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "drawing-list",
-      "phase": "P3",
-      "ref": "drawing-list.png",
-      "file": "reports/shots/drawing-list.png",
-      "diff": 0.0457,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "drawing-new",
-      "phase": "P3",
-      "ref": "drawing-new.png",
-      "file": "reports/shots/drawing-new.png",
-      "diff": 0.0604,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "drawing-detail",
-      "phase": "P3",
-      "ref": "drawing-detail.png",
-      "file": "reports/shots/drawing-detail.png",
-      "diff": 0.0426,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "drawing-detail-draft",
-      "phase": "P3",
-      "ref": "drawing-detail-draft.png",
-      "file": "reports/shots/drawing-detail-draft.png",
-      "diff": 0.0413,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "approvals",
-      "phase": "P3",
-      "ref": "approvals.png",
-      "file": "reports/shots/approvals.png",
-      "diff": 0.0535,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "users",
-      "phase": "P3",
-      "ref": "users.png",
-      "file": "reports/shots/users.png",
-      "diff": 0.0549,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "users-new",
-      "phase": "P3",
-      "ref": "users-new.png",
-      "file": "reports/shots/users-new.png",
-      "diff": 0.0511,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "scn-dwg-request",
-      "phase": "P3",
+      "name": "ref-hull-hover",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-dwg-request.png",
+      "file": "reports/shots/ref-hull-hover.png",
       "status": "pass"
     },
     {
-      "name": "scn-user-approve",
-      "phase": "P3",
+      "name": "ref-hull-yard",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-user-approve.png",
+      "file": "reports/shots/ref-hull-yard.png",
       "status": "pass"
     },
     {
-      "name": "hull-3d",
-      "phase": "P4",
-      "ref": "hull-3d.png",
-      "file": "reports/shots/hull-3d.png",
-      "diff": 0.0261,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "ship-side",
-      "phase": "P4",
-      "ref": "ship-side.png",
-      "file": "reports/shots/ship-side.png",
-      "diff": 0.0204,
-      "threshold": 0.08,
-      "sizeMatch": false,
-      "status": "over",
-      "note": "size 1090x696 != ref"
-    },
-    {
-      "name": "ship-front",
-      "phase": "P4",
-      "ref": "ship-front.png",
-      "file": "reports/shots/ship-front.png",
-      "diff": 0.0225,
-      "threshold": 0.08,
-      "sizeMatch": false,
-      "status": "over",
-      "note": "size 1090x696 != ref"
-    },
-    {
-      "name": "ship-top",
-      "phase": "P4",
-      "ref": "ship-top.png",
-      "file": "reports/shots/ship-top.png",
-      "diff": 0.032,
-      "threshold": 0.08,
-      "sizeMatch": false,
-      "status": "over",
-      "note": "size 1090x696 != ref"
-    },
-    {
-      "name": "3d-reset",
-      "phase": "P4",
-      "ref": "hull-3d.png",
-      "file": "reports/shots/3d-reset.png",
-      "diff": 0.0259,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "scn-3d-cycle",
-      "phase": "P4",
+      "name": "ref-hull-3d",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-3d-cycle.png",
+      "file": "reports/shots/ref-hull-3d.png",
       "status": "pass"
     },
     {
-      "name": "scn-final-approve",
-      "phase": "P4",
+      "name": "ref-plan-gantt",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-final-approve.png",
+      "file": "reports/shots/ref-plan-gantt.png",
+      "status": "pass",
+      "pageErrors": [
+        "TypeError: Cannot read properties of undefined (reading 'GLctx')"
+      ]
+    },
+    {
+      "name": "ref-plan-hover",
+      "phase": "REF",
+      "ref": null,
+      "file": "reports/shots/ref-plan-hover.png",
       "status": "pass"
     },
     {
-      "name": "readonly-hull-list",
-      "phase": "P2",
-      "ref": "readonly-hull-list.png",
-      "file": "reports/shots/readonly-hull-list.png",
-      "diff": 0.0262,
-      "threshold": 0.08,
-      "sizeMatch": true,
-      "status": "ok"
-    },
-    {
-      "name": "scn-3d-readonly",
-      "phase": "P4",
+      "name": "ref-plan-zoom",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-3d-readonly.png",
+      "file": "reports/shots/ref-plan-zoom.png",
       "status": "pass"
     },
     {
-      "name": "scn-hull-create-delete",
-      "phase": "P2",
+      "name": "ref-progress",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-hull-create-delete.png",
+      "file": "reports/shots/ref-progress.png",
       "status": "pass"
     },
     {
-      "name": "scn-progress-save",
-      "phase": "P2",
+      "name": "ref-progress-hover",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-progress-save.png",
+      "file": "reports/shots/ref-progress-hover.png",
       "status": "pass"
     },
     {
-      "name": "scn-plan-late-pred",
-      "phase": "P2",
+      "name": "ref-drawing-list",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-plan-late-pred.png",
+      "file": "reports/shots/ref-drawing-list.png",
       "status": "pass"
     },
     {
-      "name": "scn-final-plan-link",
-      "phase": "P4",
+      "name": "ref-drawing-hover",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-final-plan-link.png",
+      "file": "reports/shots/ref-drawing-hover.png",
       "status": "pass"
     },
     {
-      "name": "scn-final-progress-done",
-      "phase": "P4",
+      "name": "ref-users",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-final-progress-done.png",
+      "file": "reports/shots/ref-users.png",
       "status": "pass"
     },
     {
-      "name": "scn-dwg-review",
-      "phase": "P3",
+      "name": "ref-usage-log",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-dwg-review.png",
+      "file": "reports/shots/ref-usage-log.png",
       "status": "pass"
     },
     {
-      "name": "scn-dwg-approve-issue",
-      "phase": "P3",
+      "name": "ref-inquiry-admin",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-dwg-approve-issue.png",
+      "file": "reports/shots/ref-inquiry-admin.png",
       "status": "pass"
     },
     {
-      "name": "scn-final-login-new",
-      "phase": "P4",
+      "name": "ref-manual",
+      "phase": "REF",
       "ref": null,
-      "file": "reports/shots/scn-final-login-new.png",
+      "file": "reports/shots/ref-manual.png",
+      "status": "pass"
+    },
+    {
+      "name": "ref-inquiry-user",
+      "phase": "REF",
+      "ref": null,
+      "file": "reports/shots/ref-inquiry-user.png",
+      "status": "pass"
+    },
+    {
+      "name": "ref-chat",
+      "phase": "REF",
+      "ref": null,
+      "file": "reports/shots/ref-chat.png",
+      "status": "pass"
+    },
+    {
+      "name": "ref-chat-hulls",
+      "phase": "REF",
+      "ref": null,
+      "file": "reports/shots/ref-chat-hulls.png",
+      "status": "pass"
+    },
+    {
+      "name": "ref-chat-report",
+      "phase": "REF",
+      "ref": null,
+      "file": "reports/shots/ref-chat-report.png",
       "status": "pass"
     }
   ]

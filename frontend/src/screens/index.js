@@ -7,6 +7,8 @@ import ProgressScreen from './ProgressScreen.vue'
 import DrawingListScreen from './DrawingListScreen.vue'
 import ApprovalScreen from './ApprovalScreen.vue'
 import UserMgmtScreen from './UserMgmtScreen.vue'
+import UsageLogScreen from './UsageLogScreen.vue'
+import InquiryScreen from './InquiryScreen.vue'
 
 export { PlaceholderScreen }
 export const screens = {
@@ -17,4 +19,6 @@ export const screens = {
   'dwg-list': DrawingListScreen,
   'dwg-approval': ApprovalScreen,
   'user-mgmt': UserMgmtScreen,
+  'usage-log': UsageLogScreen, // 명세 외 요청 기능
+  inquiry: InquiryScreen, // 명세 외 요청 기능
 }

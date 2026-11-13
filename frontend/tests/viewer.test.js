@@ -124,14 +124,63 @@ describe('startViewer', () => {
 })
 
 describe('ShipViewer3D (VIEWER-T02/T04/T05)', () => {
+  it('opens the hull mapped to a Unity berth slot', async () => {
+    const inst = fakeInstance()
+    const w = mount(ShipViewer3D, {
+      props: {
+        fleet: [{ hull_no: '8001' }, { hull_no: '8002', hull_status: 'BUILD', progress: 65, delay_count: 2, delivery_dt: '2026-12-01' }],
+        options: opts({ createFn: async () => inst }),
+      },
+    })
+    try {
+      await flushPromises()
+      const canvas = w.find('canvas').element
+      canvas.dispatchEvent(new CustomEvent(V.READY_EVENT))
+      expect(inst.SendMessage).toHaveBeenCalledWith('ShipViewer', 'SetFleet', '2')
+      await w.find('canvas').trigger('pointerenter')
+      canvas.dispatchEvent(new CustomEvent('shipyard-hover', { detail: 1 }))
+      await flushPromises()
+      const summary = w.get('.twin-hover').text()
+      for (const value of ['8002', 'BUILD', '65%', '2건', '2026-12-01']) {
+        expect(summary).toContain(value)
+      }
+      canvas.dispatchEvent(new CustomEvent('shipyard-select', { detail: 1 }))
+      expect(w.emitted('select')).toEqual([['8002']])
+    } finally {
+      w.unmount()
+    }
+  })
+
+  it('shows API data only while hovering the ship in the ready canvas', async () => {
+    api.get.mockResolvedValue({ hull_no: '8001', hull_nm: '테스트 호선', progress: 42, delay_count: 0 })
+    const w = mount(ShipViewer3D, {
+      props: { hullNo: '8001', options: opts({ createFn: async () => fakeInstance() }) },
+    })
+    try {
+      await flushPromises()
+      const canvas = w.find('canvas')
+      canvas.element.dispatchEvent(new CustomEvent(V.READY_EVENT))
+      await canvas.trigger('pointerenter')
+      expect(w.find('.twin-hover').exists()).toBe(false)
+      canvas.element.dispatchEvent(new CustomEvent('shipviewer-hover', { detail: true }))
+      await flushPromises()
+      expect(w.get('.twin-hover').text()).toContain('42%')
+      await canvas.trigger('pointerleave')
+      expect(w.find('.twin-hover').exists()).toBe(false)
+      expect(api.get).toHaveBeenCalledWith('/api/hulls/8001')
+    } finally {
+      w.unmount()
+    }
+  })
+
   it('disables views before ready, retries with a new canvas', async () => {
     let fail = true
     const inst = fakeInstance()
     const create = vi.fn(async () => { if (fail) throw new Error('wasm 오류\nstack'); return inst })
     const w = mount(ShipViewer3D, { props: { options: opts({ createFn: create }) }, attachTo: document.body })
     expect(w.text()).toContain('3D 뷰어 불러오는 중…')
-    expect(w.text()).toContain('Demo Ship 01')
-    expect(w.text()).toContain('예시 모델 — 실제 호선 형상과 다름')
+    expect(w.text()).toContain('호선 디지털 트윈')
+    expect(w.text()).toContain('가상 조선소 · 예시 선체 형상')
     expect(w.text()).toContain('오른쪽 드래그')
     await flushPromises()
     await new Promise((r) => setTimeout(r, 0))
@@ -194,11 +243,11 @@ describe('HullDetail 3D tab (VIEWER-T01)', () => {
     tabs().find((b) => b.textContent === '3D 보기').click()
     await flushPromises()
     expect(document.querySelector('.modal').classList.contains('xl')).toBe(true)
-    expect(document.body.textContent).toContain('샘플 호선 3D 뷰어')
+    expect(document.body.textContent).toContain('8001 · 원본')
     tabs().find((b) => b.textContent === '기본정보').click()
     await flushPromises()
     expect(document.querySelector('input[name=hull_nm]').value).toBe('수정중')
-    expect(api.get.mock.calls.filter((c) => c[0] === '/api/hulls/8001')).toHaveLength(1)
+    expect(api.get.mock.calls.filter((c) => c[0] === '/api/hulls/8001')).toHaveLength(2)
     w.unmount()
   })
 

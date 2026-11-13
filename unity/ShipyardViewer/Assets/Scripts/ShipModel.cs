@@ -137,6 +137,7 @@ public static class ShipModel
         go.transform.localPosition = center;
         go.transform.localScale = size;
         go.AddComponent<MeshFilter>().sharedMesh = Cube();
+        go.AddComponent<BoxCollider>();
         go.AddComponent<MeshRenderer>().sharedMaterial = mat;
         return go;
     }
@@ -148,12 +149,14 @@ public static class ShipModel
     public static GameObject Build(Material[] mats)
     {
         Material Mat(M m) => mats[(int)m];
-        var root = new GameObject("Demo Ship 01");
+        var root = new GameObject("Ship");
         var t = root.transform;
 
         var hull = new GameObject("Hull");
         hull.transform.SetParent(t, false);
-        hull.AddComponent<MeshFilter>().sharedMesh = HullMesh();
+        var mesh = HullMesh();
+        hull.AddComponent<MeshFilter>().sharedMesh = mesh;
+        hull.AddComponent<MeshCollider>().sharedMesh = mesh;
         hull.AddComponent<MeshRenderer>().sharedMaterials = new[] { Mat(M.HullLower), Mat(M.HullUpper), Mat(M.Deck) };
 
         float deck = Keel + Depth;
@@ -205,10 +208,59 @@ public static class ShipModel
         }
 
         // 지면·킬 블록
-        Box(t, "Ground", new Vector3(0f, -.05f, 0f), new Vector3(800f, .1f, 800f), Mat(M.Ground));
         for (int k = 0; k < 9; k++)
             Stack(t, $"KeelBlock{k + 1}", 0f, 0f, -24f + 6f * k, new Vector3(1.6f, Keel, 1.2f), Mat(M.Steel));
 
         return root;
+    }
+
+    public static Transform BuildYard(Material[] mats)
+    {
+        var yard = new GameObject("Shipyard").transform;
+        Material Mat(M m) => mats[(int)m];
+        Box(yard, "Harbor", new Vector3(0, -2, 0), new Vector3(500, 1, 500), Mat(M.HullUpper));
+        Box(yard, "Dry dock floor", new Vector3(0, -.6f, 0), new Vector3(25, 1.2f, 84), Mat(M.Ground));
+        foreach (float side in new[] { -1f, 1f })
+        {
+            Box(yard, "Quay", new Vector3(side * 23, 0, -6), new Vector3(21, 3, 96), Mat(M.Ground));
+            Box(yard, "Dock edge", new Vector3(side * 13, 1.55f, -6), new Vector3(.35f, .1f, 96), Mat(M.Accent));
+            foreach (float z in new[] { -27f, -21f })
+                Box(yard, "Crane leg", new Vector3(side * 14, 11, z), new Vector3(2, 20, 2), Mat(M.Accent));
+        }
+        Box(yard, "Gantry beam", new Vector3(0, 22, -24), new Vector3(33, 2, 4), Mat(M.Accent));
+        Box(yard, "Workshop", new Vector3(24, 5, 10), new Vector3(14, 7, 24), Mat(M.House));
+        Box(yard, "Workshop roof", new Vector3(24, 8.7f, 10), new Vector3(15, .5f, 25), Mat(M.Steel));
+        for (int row = 0; row < 3; row++)
+            Box(yard, "Container", new Vector3(-23, 2.8f, 8 + row * 5), new Vector3(10, 2.6f, 3), Mat(row == 1 ? M.Steel : M.HullLower));
+        return yard;
+    }
+
+    public static Transform BuildFleetYard(Material[] mats, out Transform trolley)
+    {
+        var yard = new GameObject("Fleet yard").transform;
+        Material Mat(M m) => mats[(int)m];
+        Box(yard, "Harbor", new Vector3(0, -3, 0), new Vector3(700, 1, 700), Mat(M.HullUpper));
+        Box(yard, "Quay", new Vector3(0, -.5f, 0), new Vector3(124, 2, 22), Mat(M.Ground));
+        Box(yard, "Quay stripe", new Vector3(0, .54f, 10), new Vector3(119, .08f, .45f), Mat(M.Accent));
+        for (int i = -1; i <= 1; i++)
+        {
+            float x = i * 32;
+            Box(yard, "Dry dock", new Vector3(x, -.5f, -44), new Vector3(26, 1, 72), Mat(M.Ground));
+            Box(yard, "Pier", new Vector3(x + 12, -.75f, 43), new Vector3(3, 2.5f, 68), Mat(M.Ground));
+            for (int j = 0; j < 3; j++)
+                Box(yard, "Freight container", new Vector3(x + j * 4, 1.75f, 1), new Vector3(3.5f, 2.5f, 6), Mat(j == 1 ? M.Steel : M.HullLower));
+        }
+        foreach (float x in new[] { -58f, 58f })
+        {
+            Box(yard, "Gantry foundation", new Vector3(x, -.5f, -68), new Vector3(12, 2, 24), Mat(M.Ground));
+            Box(yard, "Gantry leg", new Vector3(x, 11, -68), new Vector3(3, 22, 3), Mat(M.Accent));
+        }
+        Box(yard, "Gantry beam", new Vector3(0, 22, -68), new Vector3(120, 2, 4), Mat(M.Accent));
+        trolley = new GameObject("Moving trolley").transform;
+        trolley.SetParent(yard, false);
+        Box(trolley, "Trolley", Vector3.zero, new Vector3(5, 3, 5), Mat(M.Steel));
+        Box(trolley, "Hoist cable", new Vector3(0, -4, 0), new Vector3(.22f, 7, .22f), Mat(M.Steel));
+        Box(trolley, "Spreader", new Vector3(0, -8, 0), new Vector3(4, 1, 2), Mat(M.Accent));
+        return yard;
     }
 }

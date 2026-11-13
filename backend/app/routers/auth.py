@@ -1,9 +1,12 @@
+from typing import Literal
+
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, Request, Response
 
 from ..db import get_db
 from ..deps import current_user, token_payload
 from ..schemas import LoginIn, MemberIn, OtpIn
-from ..services import auth
+from ..services import auth, demo
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -35,4 +38,17 @@ def logout(user=Depends(current_user), conn=Depends(get_db)):
 
 @router.get("/me")
 def me(user=Depends(current_user), conn=Depends(get_db)):
-    return auth.me(conn, user)
+    profile = auth.me(conn, user)
+    role = demo.role_for(user)
+    if role:
+        profile["demo_role"] = role
+    return profile
+
+
+class DemoRoleIn(BaseModel):
+    role: Literal["admin", "user"]
+
+
+@router.post("/demo-role")
+def demo_role(body: DemoRoleIn, request: Request, user=Depends(current_user), conn=Depends(get_db)):
+    return demo.switch(conn, user, body.role, _ip(request))

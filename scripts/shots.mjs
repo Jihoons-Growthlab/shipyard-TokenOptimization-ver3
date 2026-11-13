@@ -69,6 +69,16 @@ async function login(context, page, empNo, acc, auth) {
   await page.evaluate(([s, k, v]) => window[s].setItem(k, v), [auth.storage || 'sessionStorage', auth.key, body.access_token]);
 }
 
+// 기능 소개 GIF용 프레임(명세 외 요청): frame 단계마다 <out>/frames/<flow>/NN.png와 캡션을 남긴다.
+const rec = { flow: null, n: 0, captions: [], mouse: { x: 0, y: 0 } };
+const CURSOR_JS = `(() => { if (window.__cur) return; const d = document.createElement('div'); window.__cur = d;
+  d.style.cssText = 'position:fixed;z-index:99999;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;' +
+    'background:rgba(239,68,68,.55);border:2px solid #fff;box-shadow:0 0 0 2px rgba(239,68,68,.6);pointer-events:none;left:-50px;top:-50px;transition:transform .1s';
+  document.body.appendChild(d);
+  addEventListener('mousemove', (e) => { d.style.left = e.clientX + 'px'; d.style.top = e.clientY + 'px'; }, true);
+  addEventListener('mousedown', () => { d.style.transform = 'scale(.7)'; }, true);
+  addEventListener('mouseup', () => { d.style.transform = ''; }, true); })()`;
+
 async function runStep(page, s, timeout) {
   const [op] = Object.keys(s);
   const v = s[op];
@@ -79,6 +89,31 @@ async function runStep(page, s, timeout) {
     case 'press': return page.locator(v[0]).first().press(v[1], { timeout });
     case 'select': return page.locator(v[0]).first().selectOption(String(v[1]), { timeout });
     case 'wait': return typeof v === 'number' ? page.waitForTimeout(v) : page.locator(v).first().waitFor({ timeout });
+    case 'hover': return page.locator(v).first().hover({ timeout });
+    case 'drag': { // [selector, dx, offsetX?] — 요소 안 offsetX(음수면 오른쪽 끝 기준, 기본 가운데)에서 잡고 가로로 dx px 끈다.
+      const box = await page.locator(v[0]).first().boundingBox({ timeout });
+      const off = v[2] ?? box.width / 2, x = box.x + (off < 0 ? box.width + off : off), y = box.y + box.height / 2;
+      await page.mouse.move(x, y); await page.mouse.down();
+      for (let i = 1; i <= 8; i++) await page.mouse.move(x + (v[1] * i) / 8, y);
+      return page.mouse.up();
+    }
+    case 'cursor': return page.evaluate(CURSOR_JS);
+    case 'frame': { // v: 캡션
+      const dir = join(ROOT, cfg.out, 'frames', rec.flow); mkdirSync(dir, { recursive: true });
+      await page.waitForTimeout(120);
+      await page.screenshot({ path: join(dir, `${String(rec.n).padStart(2, '0')}.png`) });
+      rec.captions.push(v); rec.n++;
+      return writeFileSync(join(dir, 'captions.json'), JSON.stringify(rec.captions, null, 1));
+    }
+    case 'mouseTo': { // [selector, offsetX?] — 요소 위로 커서 이동(offsetX 음수면 오른쪽 끝 기준)
+      const box = await page.locator(v[0]).first().boundingBox({ timeout });
+      const off = v[1] ?? box.width / 2;
+      rec.mouse = { x: box.x + (off < 0 ? box.width + off : off), y: box.y + box.height / 2 };
+      return page.mouse.move(rec.mouse.x, rec.mouse.y, { steps: 6 });
+    }
+    case 'mouseDown': return page.mouse.down();
+    case 'mouseBy': rec.mouse.x += v; return page.mouse.move(rec.mouse.x, rec.mouse.y, { steps: 8 });
+    case 'mouseUp': return page.mouse.up();
     case 'expect': return page.getByText(v).first().waitFor({ timeout });
     case 'expectNot': return page.getByText(v).first().waitFor({ state: 'hidden', timeout });
     default: throw new Error(`unknown step ${op}`);
@@ -141,6 +176,7 @@ async function main() {
       }
       for (const f of group) {
         const r = { name: f.name, phase: f.phase, ref: f.ref || null };
+        Object.assign(rec, { flow: f.name, n: 0, captions: [] });
         consoleErrors.length = 0;
         try {
           for (const s of f.steps) await runStep(page, s, cfg.step_timeout_ms);

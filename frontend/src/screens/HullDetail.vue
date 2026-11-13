@@ -85,7 +85,7 @@
     </div>
 
     <!-- 3D 보기: 탭에 들어갈 때 시작, 떠나면 종료 -->
-    <ShipViewer3D v-else-if="tab === 'viewer'" />
+    <ShipViewer3D v-else-if="tab === 'viewer'" :hull-no="no" />
 
     <!-- 연계 현황 -->
     <div v-else-if="tab === 'summary'" class="sum">

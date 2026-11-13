@@ -7,6 +7,8 @@ dependencies = [
     "uvicorn>=0.54",
     "pyjwt>=2.15",
     "argon2-cffi>=25.1",
+    "fpdf2>=2.8.9",
+    "openpyxl>=3.1.5",
 ]
 
 [project.scripts]

@@ -175,3 +175,31 @@ def test_plan_t09_view_forbidden(client, auth):
         assert client.post("/api/plans/1/drawings", json={"drawing_id": 1}, headers=h).status_code == 403
         assert client.delete("/api/plans/1/drawings/1", headers=h).status_code == 403
         assert client.get("/api/plans/1/drawings", headers=h).status_code == 200
+
+
+def test_plan_drag_reschedule_cascade(client, auth):
+    """간트 드래그(명세 외 요청 기능): 선행이 후행 시작일에 닿으면 후행을 연쇄로 민다. 당기지는 않는다."""
+    h = auth("park.pm")
+    a = new_plan(client, h, "8004", plan_start_dt="2026-11-01", plan_end_dt="2026-11-14")
+    b = new_plan(client, h, "8004", plan_start_dt="2026-11-15", plan_end_dt="2026-11-20", pred_plan_ids=[a["plan_id"]])
+    c = new_plan(client, h, "8004", plan_start_dt="2026-11-25", plan_end_dt="2026-11-30", pred_plan_ids=[b["plan_id"]])
+    other = new_plan(client, h, "8004", plan_start_dt="2026-11-02", plan_end_dt="2026-11-03")
+    get = lambda p: client.get(f"/api/plans/{p['plan_id']}", headers=h).json()  # noqa: E731
+    span = lambda p: (get(p)["plan_start_dt"], get(p)["plan_end_dt"])  # noqa: E731
+    url = f"/api/plans/{a['plan_id']}/schedule"
+    r = client.patch(url, json={"plan_start_dt": "2026-11-07", "plan_end_dt": "2026-11-20"}, headers=h)
+    assert r.status_code == 200, r.text
+    assert r.json()["shifted_plan_ids"] == sorted([b["plan_id"], c["plan_id"]])
+    assert span(a) == ("2026-11-07", "2026-11-20")
+    assert span(b) == ("2026-11-21", "2026-11-26") and span(c) == ("2026-11-27", "2026-12-02")
+    assert span(other) == ("2026-11-02", "2026-11-03")
+    r = client.patch(url, json={"plan_start_dt": "2026-11-01", "plan_end_dt": "2026-11-05"}, headers=h).json()
+    assert r["shifted_plan_ids"] == [] and span(b) == ("2026-11-21", "2026-11-26")
+    bu = f"/api/plans/{b['plan_id']}/schedule"
+    r = client.patch(bu, json={"plan_start_dt": "2026-11-03", "plan_end_dt": "2026-11-08"}, headers=h)
+    assert (r.status_code, r.json()["code"]) == (409, "PRED_LATE_CONFIRM_REQUIRED")
+    r = client.patch(bu, json={"plan_start_dt": "2026-11-03", "plan_end_dt": "2026-11-08", "confirm_late_preds": True}, headers=h)
+    assert r.status_code == 200 and span(b) == ("2026-11-03", "2026-11-08")
+    r = client.patch(url, json={"plan_start_dt": "2026-11-05", "plan_end_dt": "2026-11-01"}, headers=h)
+    assert r.json()["message"] == "계획 종료일이 시작일보다 빠릅니다."
+    assert client.patch(url, json={}, headers=auth("choi.qa")).status_code == 403

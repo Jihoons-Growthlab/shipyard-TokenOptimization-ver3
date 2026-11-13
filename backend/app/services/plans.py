@@ -1,5 +1,5 @@
 """F05 공정 계획·선후행·도면 연계."""
-from datetime import timedelta
+from datetime import date, timedelta
 
 from .. import config
 from ..db import one, rows, tx
@@ -207,6 +207,46 @@ def set_predecessors(conn, plan_id: int, pred_ids: list[int], confirm: bool) -> 
         _write_preds(conn, plan_id, preds)
         recalc_hull(conn, p["HullNo"])
     return get_plan(conn, plan_id)
+
+
+def _shift(day: str, n: int) -> str:
+    return (date.fromisoformat(day) + timedelta(days=n)).isoformat()
+
+
+def reschedule(conn, plan_id: int, start, end, confirm: bool) -> dict:
+    """간트 드래그. 기간을 바꾸고, 선행 종료일이 후행 시작일에 닿거나 넘으면 후행을 종료+1일로 민다(기간 유지, 연쇄).
+    명세 BR-04의 '자동 조정 없음'을 사용자 요청으로 바꾼 동작이다."""
+    p = get_plan_row(conn, plan_id)
+    if not is_date(start) or not is_date(end):
+        raise bad("계획 시작/종료일을 입력하세요.", "plan_start_dt" if not is_date(start) else "plan_end_dt")
+    if end < start:
+        raise bad("계획 종료일이 시작일보다 빠릅니다.", "plan_end_dt")
+    hull = p["HullNo"]
+    sched = {r["PlanId"]: [r["PlanStartDt"], r["PlanEndDt"]]
+             for r in rows(conn, "SELECT PlanId, PlanStartDt, PlanEndDt FROM TB_PRC_Plan WHERE HullNo=?", hull)}
+    preds = _preds_map(conn, hull)
+    if start != p["PlanStartDt"]:
+        _validate_preds(conn, plan_id, hull, start, preds.get(plan_id, []), confirm)
+    succs: dict[int, list[int]] = {}
+    for sid, ps in preds.items():
+        for x in ps:
+            succs.setdefault(x, []).append(sid)
+    sched[plan_id] = [start, end]
+    changed, queue = {plan_id}, [plan_id]
+    while queue:
+        for sid in succs.get(queue.pop(0), []):
+            need = _shift(max(sched[x][1] for x in preds[sid]), 1)
+            s, e = sched[sid]
+            if s < need:
+                n = (date.fromisoformat(need) - date.fromisoformat(s)).days
+                sched[sid] = [need, _shift(e, n)]
+                changed.add(sid)
+                queue.append(sid)
+    with tx(conn):
+        conn.executemany("UPDATE TB_PRC_Plan SET PlanStartDt=?, PlanEndDt=? WHERE PlanId=?",
+                         [(*sched[i], i) for i in changed])
+        recalc_hull(conn, hull)
+    return {"plan": get_plan(conn, plan_id), "shifted_plan_ids": sorted(changed - {plan_id})}
 
 
 def delete_plan(conn, plan_id: int) -> None:

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Response
 
 from ..db import get_db
 from ..deps import require
-from ..schemas import ApproveIn, UserIn
+from ..schemas import ApproveIn, UserIn, UserMenusIn
 from ..services import users
 from ..services.common import ADMIN
 
@@ -34,6 +34,16 @@ def update_user(emp_no: str, body: UserIn, _=Depends(A), conn=Depends(get_db)):
 def delete_user(emp_no: str, actor=Depends(A), conn=Depends(get_db)):
     users.delete_user(conn, emp_no, actor)
     return Response(status_code=204)
+
+
+@router.get("/users/{emp_no}/menus")
+def user_menus(emp_no: str, _=Depends(A), conn=Depends(get_db)):
+    return users.user_menus(conn, emp_no)
+
+
+@router.put("/users/{emp_no}/menus")
+def set_user_menus(emp_no: str, body: UserMenusIn, actor=Depends(A), conn=Depends(get_db)):
+    return users.set_user_menus(conn, emp_no, [m.model_dump() for m in body.menus], actor)
 
 
 @router.post("/users/{emp_no}/approve")

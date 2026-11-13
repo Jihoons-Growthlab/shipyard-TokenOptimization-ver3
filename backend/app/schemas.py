@@ -100,6 +100,29 @@ class PlanIn(In):
     confirm_late_preds: bool = False
 
 
+class ScheduleIn(In):
+    plan_start_dt: Optional[str] = Str(20)
+    plan_end_dt: Optional[str] = Str(20)
+    confirm_late_preds: bool = False
+
+
+class UserMenuItem(In):
+    menu_id: str = Field(default="", max_length=20)
+    level: Optional[int] = None
+
+
+class UserMenusIn(In):
+    menus: list[UserMenuItem] = Field(default_factory=list)
+
+
+class InquiryIn(In):
+    category: Optional[str] = Str(20)
+    title: Optional[str] = Str(200)
+    content: Optional[str] = Str(5000)
+    status: Optional[str] = Str(20)
+    answer: Optional[str] = Str(5000)
+
+
 class PredsIn(In):
     pred_plan_ids: list[int] = Field(default_factory=list)
     confirm_late_preds: bool = False

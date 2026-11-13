@@ -24,3 +24,6 @@ unity/*/*.sln
 state/run/
 reports/
 .claude/settings.local.json
+
+# Local Ollama runtime and model weights
+.local-llm/

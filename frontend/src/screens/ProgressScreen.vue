@@ -11,7 +11,8 @@
       <table class="t prog-table">
         <thead><tr><th>공정</th><th>계획기간</th><th>실제착수</th><th>진척</th><th>상태</th><th>담당</th></tr></thead>
         <tbody>
-          <tr v-for="p in targets" :key="p.plan_id" class="click" :class="{ on: p.plan_id === selectedId }" @click="select(p)">
+          <tr v-for="p in targets" :key="p.plan_id" class="click" :class="{ on: p.plan_id === selectedId }" @click="select(p)"
+            @mouseenter="preview.enter(p.plan_id, $event)" @mouseleave="preview.leave">
             <td>{{ p.label }}</td>
             <td>{{ p.plan_start_dt }} ~ {{ p.plan_end_dt }}</td>
             <td>{{ dash(p.actual_start_dt) }}</td>
@@ -24,6 +25,32 @@
       </table>
     </div>
 
+    <HoverCard v-if="preview.pv.key" :pos="preview.pv.pos" :width="360" :height="270"
+      @enter="preview.keep" @leave="preview.leave">
+      <p v-if="preview.pv.error">{{ preview.pv.error }}</p>
+      <p v-else-if="!preview.pv.data" class="muted">공정 실적을 불러오는 중…</p>
+      <template v-else>
+        <div class="preview-heading">
+          <strong>{{ preview.pv.data.plan.label }}</strong>
+          <StatusBadge :code="preview.pv.data.plan.plan_status" />
+        </div>
+        <p>누적 진척률 {{ preview.pv.data.plan.progress_rate }}%</p>
+        <p v-if="!preview.pv.data.history.length" class="muted">등록된 실적 이력이 없습니다.</p>
+        <template v-else>
+          <strong>최근 실적</strong>
+          <table class="t preview-history">
+            <thead><tr><th>작업일</th><th>진척률</th><th>공수</th><th>인원</th></tr></thead>
+            <tbody>
+              <tr v-for="entry in preview.pv.data.history.slice(0, 3)" :key="entry.progress_id">
+                <td>{{ entry.work_dt }}</td><td>{{ entry.progress_rate }}%</td>
+                <td>{{ dash(entry.man_hour) }}</td><td>{{ dash(entry.worker_cnt) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </template>
+        <p class="muted">클릭하면 전체 실적 이력을 볼 수 있습니다.</p>
+      </template>
+    </HoverCard>
     <div class="card detail">
       <p v-if="!selectedId" class="muted">위 목록에서 공정을 선택하세요.</p>
       <template v-else-if="plan">
@@ -73,9 +100,13 @@ import { blankNull, dash, numOrNull } from '../utils/date.js'
 import PageHead from '../components/PageHead.vue'
 import ProgressBar from '../components/ProgressBar.vue'
 import StatusBadge from '../components/StatusBadge.vue'
+import HoverCard from '../components/HoverCard.vue'
+import { useHoverPreview } from '../utils/hoverPreview.js'
 
 defineProps({ token: String, param: [String, Number], ctx: Number, canWrite: Boolean, title: String })
 
+const getProgress = (planId) => api.get(`/api/plans/${planId}/progress`)
+const preview = useHoverPreview(getProgress)
 const hulls = ref([])
 const users = ref([])
 const hullNo = ref('')
@@ -96,6 +127,8 @@ function resetForm() {
 }
 
 async function loadTargets() {
+  preview.close()
+  preview.clear()
   if (!hullNo.value) return
   try {
     const r = await api.get(`/api/hulls/${hullNo.value}/progress-targets`, { include_done: includeDone.value })
@@ -118,9 +151,10 @@ function apply(r) {
 }
 
 async function select(p) {
+  preview.close()
   selectedId.value = p.plan_id
   try {
-    apply(await api.get(`/api/plans/${p.plan_id}/progress`))
+    apply(await getProgress(p.plan_id))
     resetForm()
   } catch (e) { fail(e) }
 }
@@ -161,6 +195,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.preview-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.preview-history { margin-top: 6px; }
 .hsel { width: 166px; }
 .pcell { width: 250px; }
 .detail { margin-top: 12px; }

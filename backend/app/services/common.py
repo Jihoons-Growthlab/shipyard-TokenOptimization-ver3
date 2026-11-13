@@ -77,12 +77,28 @@ def user_options(conn) -> list[dict]:
     return rows(conn, "SELECT emp_no, display_name FROM users WHERE status='approved' ORDER BY display_name, emp_no")
 
 
-# ---- 권한
+# ---- 권한: 그룹 권한(여러 그룹이면 최댓값) 위에 회원별 권한(TB_SYS_UserMenu)이 메뉴 단위로 우선한다.
+USER_MENU = "M91"  # 회원관리. 쓰기 = Admin 등급
+_GBN_SQL = "CASE {c} WHEN 'Admin' THEN 3 WHEN 'Write' THEN 2 WHEN 'View' THEN 1 ELSE 0 END"
+
+
+def group_menu_levels(conn, emp_no: str) -> dict[str, int]:
+    return {r["MenuId"]: r["lvl"] for r in rows(
+        conn, f"SELECT a.MenuId, MAX({_GBN_SQL.format(c='a.AuthGbn')}) lvl FROM TB_SYS_AuthMenu a "
+              "JOIN TB_SYS_AuthUser u ON u.AuthCd=a.AuthCd WHERE u.EmpNo=? GROUP BY a.MenuId", emp_no)}
+
+
+def user_menu_levels(conn, emp_no: str) -> dict[str, int]:
+    return {r["MenuId"]: r["lvl"] for r in rows(
+        conn, f"SELECT MenuId, {_GBN_SQL.format(c='AuthGbn')} lvl FROM TB_SYS_UserMenu WHERE EmpNo=?", emp_no)}
+
+
+def menu_levels(conn, emp_no: str) -> dict[str, int]:
+    return {**group_menu_levels(conn, emp_no), **user_menu_levels(conn, emp_no)}
+
+
 def menu_level(conn, emp_no: str, menu_id: str) -> int:
-    v = scalar(conn, "SELECT MAX(CASE a.AuthGbn WHEN 'Admin' THEN 3 WHEN 'Write' THEN 2 WHEN 'View' THEN 1 ELSE 0 END) "
-                     "FROM TB_SYS_AuthMenu a JOIN TB_SYS_AuthUser u ON u.AuthCd=a.AuthCd "
-                     "WHERE u.EmpNo=? AND a.MenuId=?", emp_no, menu_id)
-    return int(v or 0)
+    return menu_levels(conn, emp_no).get(menu_id, 0)
 
 
 def hull_exists(conn, hull_no) -> bool:

@@ -3,6 +3,7 @@ from .. import config
 from ..db import one, rows, scalar, tx
 from ..errors import ApiError, bad, conflict, not_found
 from ..security import hash_password
+from .common import ADMIN, USER_MENU, WRITE, group_menu_levels, user_menu_levels
 from .members import normalize_phone, user_out, validate_member
 
 STATUSES = ("pending", "approved", "rejected", "disabled")
@@ -138,3 +139,45 @@ def delete_user(conn, emp_no: str, actor: dict) -> None:
         raise conflict("SELF_DELETE", "로그인 중인 본인 계정은 삭제할 수 없습니다.")
     with tx(conn):
         conn.execute("DELETE FROM users WHERE emp_no=?", (emp_no,))
+
+
+# ---- 회원별 메뉴 권한(명세 외 요청 기능). 화면 단위는 0 없음 / 1 읽기 / 2 쓰기.
+_SHOWN = lambda lvl: min(lvl, WRITE)  # noqa: E731
+
+
+def user_menus(conn, emp_no: str) -> dict:
+    _get(conn, emp_no)
+    group, own = group_menu_levels(conn, emp_no), user_menu_levels(conn, emp_no)
+    menus = rows(conn, "SELECT MenuId menu_id, ParentId parent_id, Title title, Seq seq FROM TB_SYS_MenuInfo "
+                       "WHERE UseYN=1 ORDER BY Seq, MenuId")
+    for m in menus:
+        g, u = _SHOWN(group.get(m["menu_id"], 0)), own.get(m["menu_id"])
+        m.update(group_level=g, user_level=None if u is None else _SHOWN(u), level=g if u is None else _SHOWN(u))
+    return {"emp_no": emp_no, "menus": menus}
+
+
+def set_user_menus(conn, emp_no: str, items: list[dict], actor: dict) -> dict:
+    """전체 교체. level이 null이거나 그룹 권한과 같으면 그룹을 따른다."""
+    _get(conn, emp_no)
+    known = {r["MenuId"] for r in rows(conn, "SELECT MenuId FROM TB_SYS_MenuInfo")}
+    group = group_menu_levels(conn, emp_no)
+    out: dict[str, str] = {}
+    for it in items:
+        mid, lvl = it.get("menu_id"), it.get("level")
+        if mid not in known:
+            raise bad("존재하지 않는 메뉴입니다.", "menus")
+        if lvl is None:
+            continue
+        if lvl not in (0, 1, 2):
+            raise bad("허용되지 않는 권한입니다.", "menus")
+        if lvl != _SHOWN(group.get(mid, 0)):
+            out[mid] = ["None", "View", "Admin" if mid == USER_MENU else "Write"][lvl]
+    if emp_no == actor["emp_no"]:
+        mine = out.get(USER_MENU)
+        if (ADMIN if mine == "Admin" else 0 if mine else group.get(USER_MENU, 0)) < ADMIN:
+            raise conflict("SELF_LOCKOUT", "본인의 회원관리 쓰기 권한은 낮출 수 없습니다.")
+    with tx(conn):
+        conn.execute("DELETE FROM TB_SYS_UserMenu WHERE EmpNo=?", (emp_no,))
+        conn.executemany("INSERT INTO TB_SYS_UserMenu(EmpNo, MenuId, AuthGbn) VALUES (?,?,?)",
+                         [(emp_no, m, g) for m, g in out.items()])
+    return user_menus(conn, emp_no)

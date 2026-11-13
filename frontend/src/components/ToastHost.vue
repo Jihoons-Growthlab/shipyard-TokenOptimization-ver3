@@ -1,7 +1,7 @@
 <template>
-  <div class="toasts" aria-live="polite">
+  <TransitionGroup name="toast" tag="div" class="toasts" aria-live="polite">
     <div v-for="t in toasts" :key="t.id" class="toast" :class="t.kind">{{ t.message }}</div>
-  </div>
+  </TransitionGroup>
 </template>
 
 <script setup>

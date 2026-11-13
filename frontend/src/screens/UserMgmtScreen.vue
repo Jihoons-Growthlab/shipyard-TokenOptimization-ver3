@@ -29,7 +29,8 @@
     </div>
     <section class="card bottom">
       <h3>{{ heading }}</h3>
-      <form v-if="mode" @submit.prevent="save">
+      <form v-if="mode" class="uform" @submit.prevent="save">
+        <div class="ubody">
         <div class="fg c4">
           <label class="f"><span>성 *</span><input v-model.trim="fm.last_name" name="last_name" /></label>
           <label class="f"><span>이름 *</span><input v-model.trim="fm.first_name" name="first_name" /></label>
@@ -48,6 +49,28 @@
           </label>
           <div class="f"><span>구글 2차인증</span><label class="chk"><input v-model="fm.totp_enabled" type="checkbox" name="totp_enabled" />사용 (등록된 사용자만)</label></div>
           <label class="f"><span>가입일</span><input :value="day(fm.created_at) || '-'" readonly /></label>
+        </div>
+        <div class="perm">
+          <div class="phead">
+            <b>메뉴 권한</b><span class="muted">회원별 지정이 그룹 권한보다 우선합니다.</span>
+            <button v-if="mode === 'edit'" class="btn sm" type="button" :disabled="!perms.length" @click="resetPerms">그룹 기본값</button>
+          </div>
+          <p v-if="mode === 'new'" class="muted">저장한 뒤 메뉴 권한을 지정할 수 있습니다.</p>
+          <div v-else class="pscroll">
+          <table class="t ptable">
+            <thead><tr><th>메뉴</th><th>없음</th><th>읽기</th><th>쓰기</th><th>그룹</th></tr></thead>
+            <tbody>
+              <tr v-for="m in perms" :key="m.menu_id" :class="{ ov: isOverride(m) }">
+                <td :class="{ sub: m.parent_id }">{{ m.title }}<span v-if="isOverride(m)" class="b b-info">개별</span></td>
+                <td v-for="v in [0, 1, 2]" :key="v" class="rc">
+                  <input type="radio" :name="'perm-' + m.menu_id" :aria-label="`${m.title} ${LV[v]}`" :checked="eff(m) === v" @change="setLevel(m, v)" />
+                </td>
+                <td class="muted">{{ LV[m.group_level] }}</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
         </div>
         <div class="bar-row">
           <button class="btn" type="button" @click="startNew">신규</button>
@@ -86,6 +109,31 @@ const sel = ref(null)
 const mode = ref('') // '' | 'new' | 'edit'
 const fm = reactive({})
 
+// 메뉴 권한: choice가 null이면 그룹 권한을 따른다. 0 없음 / 1 읽기 / 2 쓰기.
+const LV = ['없음', '읽기', '쓰기']
+const perms = ref([])
+const eff = (m) => m.choice ?? m.group_level
+const isOverride = (m) => m.choice !== null && m.choice !== m.group_level
+const permsDirty = computed(() => perms.value.some((m) => m.choice !== m.user_level))
+
+async function loadPerms(empNo) {
+  perms.value = []
+  try {
+    const r = await api.get(`/api/users/${empNo}/menus`)
+    if (sel.value === empNo) perms.value = r.menus.map((m) => ({ ...m, choice: m.user_level }))
+  } catch (e) { fail(e) }
+}
+// 부모 메뉴가 없음이면 하위 메뉴가 보이지 않으므로, 하위를 열면 부모를 읽기로, 부모를 닫으면 하위도 닫는다.
+function setLevel(m, v) {
+  m.choice = v
+  const parent = perms.value.find((x) => x.menu_id === m.parent_id)
+  if (v > 0 && parent && eff(parent) === 0) parent.choice = 1
+  if (v === 0) for (const c of perms.value) if (c.parent_id === m.menu_id) c.choice = 0
+}
+function resetPerms() {
+  for (const m of perms.value) m.choice = null
+}
+
 const current = computed(() => users.value.find((u) => u.emp_no === sel.value) || null)
 const heading = computed(() => (mode.value === 'edit' ? `회원 수정 — ${current.value?.display_name || fm.emp_no}` : mode.value === 'new' ? '회원 등록' : '입력 / 수정'))
 // 사용자 응답의 groups는 [{code,name}]
@@ -117,6 +165,7 @@ function select(u) {
   sel.value = u.emp_no
   mode.value = 'edit'
   fill(u)
+  loadPerms(u.emp_no)
 }
 function startNew() {
   sel.value = null
@@ -131,6 +180,9 @@ async function save() {
   busy.value = true
   try {
     const u = isNew ? await api.post('/api/users', body) : await api.patch(`/api/users/${fm.emp_no}`, body)
+    if (!isNew && permsDirty.value) {
+      await api.put(`/api/users/${u.emp_no}/menus`, { menus: perms.value.map((m) => ({ menu_id: m.menu_id, level: m.choice })) })
+    }
     toast('저장되었습니다.', 'success')
     await load()
     select(u)
@@ -172,5 +224,27 @@ onMounted(async () => {
 .fq { width: 148px; }
 .cnt { font-size: 12px; color: var(--muted); }
 .top { flex: 1; min-height: 0; }
-.bottom { flex: 1; min-height: 0; overflow: auto; margin: 10px 0 0; }
+/* 아래 카드는 화면 높이에 맞추고, 메뉴 권한 표만 스크롤한다. 버튼 줄은 항상 보인다. */
+.bottom { flex: 1; min-height: 0; overflow: auto; margin: 10px 0 0; display: flex; flex-direction: column; }
+.bottom > h3 { flex: none; }
+.uform { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.uform > .bar-row { flex: none; margin-top: 10px; }
+.ubody { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; align-items: start; }
+.perm { min-width: 0; height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.phead { flex: none; }
+.pscroll { flex: 1; min-height: 90px; overflow: auto; border: 1px solid #e2e7ef; border-radius: 8px; }
+.pscroll .ptable th { box-shadow: 0 1px 0 var(--line); }
+.phead { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12.5px; }
+.phead .btn { margin-left: auto; }
+.ptable th, .ptable td { padding: 3px 8px; }
+.ptable .rc { text-align: center; width: 44px; }
+.ptable th:nth-child(n+2) { text-align: center; }
+.ptable .sub { padding-left: 22px; }
+.ptable tr.ov td:first-child { font-weight: 600; }
+.ptable .b { margin-left: 6px; }
+@media (max-width: 1200px) {
+  .ubody { grid-template-columns: minmax(0, 1fr); flex: none; }
+  .perm { height: auto; }
+  .pscroll { max-height: 240px; }
+}
 </style>

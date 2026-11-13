@@ -1,5 +1,5 @@
 """인증·권한 의존성. 권한은 요청마다 DB에서 읽는다."""
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from .db import get_db, one
@@ -17,7 +17,7 @@ def token_payload(cred: HTTPAuthorizationCredentials | None = Depends(_bearer)) 
     return payload
 
 
-def current_user(payload: dict = Depends(token_payload), conn=Depends(get_db)) -> dict:
+def current_user(request: Request, payload: dict = Depends(token_payload), conn=Depends(get_db)) -> dict:
     lid = payload.get("lid")
     if payload.get("stage") != "full" or not lid:
         raise unauthorized()
@@ -28,6 +28,7 @@ def current_user(payload: dict = Depends(token_payload), conn=Depends(get_db)) -
     if not user or user["status"] != "approved":
         raise unauthorized()
     user["lid"] = lid
+    request.state.emp_no = user["emp_no"]  # 사용 로그(API 호출 기록)용
     return user
 
 

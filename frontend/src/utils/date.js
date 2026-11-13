@@ -8,3 +8,11 @@ export const dash = (v) => (v === null || v === undefined || v === '' ? '-' : v)
 /** 빈 문자열은 null, 그 외 숫자로 */
 export const numOrNull = (v) => (v === '' || v === null || v === undefined ? null : Number(v))
 export const blankNull = (v) => (v === '' || v === undefined ? null : v)
+/** 서버 UTC 시각 `YYYY-MM-DD HH:MM:SS` → 브라우저 현지 `YYYY-MM-DD HH:MM` */
+export function fmtUtc(s) {
+  if (!s) return '-'
+  const t = new Date(`${s.replace(' ', 'T')}Z`)
+  if (Number.isNaN(t.getTime())) return s
+  const p = (n) => String(n).padStart(2, '0')
+  return `${t.getFullYear()}-${p(t.getMonth() + 1)}-${p(t.getDate())} ${p(t.getHours())}:${p(t.getMinutes())}`
+}

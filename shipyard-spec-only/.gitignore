@@ -1,0 +1,15 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.env
+*.db
+*.db-*
+storage/
+state/logs/
+state/run/
+.local-llm/
+frontend/dist/
+frontend/public/unity/
+unity/*/Library/
+unity/*/Temp/

@@ -96,9 +96,10 @@ export function startViewer(canvas, cb = {}, opts = {}) {
     try {
       if (s.closed) return
       if (!canvas?.id) throw new Error('canvas id가 없습니다.')
-      const cfg = await fetchConfig(env.fetch)
+      s.timer = setTimeout(() => report(new Error(TIMEOUT_MSG)), env.timeoutMs)
+      const cfg = await Promise.race([fetchConfig(env.fetch), closedP.then(() => LATE)])
       if (s.closed) return
-      await env.loadScript(BUILD_BASE + cfg.loaderUrl)
+      await Promise.race([env.loadScript(BUILD_BASE + cfg.loaderUrl), closedP])
       if (s.closed) return
       const create = env.create()
       if (typeof create !== 'function') throw new Error(LOADER_MSG)
@@ -122,7 +123,6 @@ export function startViewer(canvas, cb = {}, opts = {}) {
       s.instance = got
       if (s.closed) return
       cb.onProgress?.(1)
-      s.timer = setTimeout(() => { if (!s.ready) report(new Error(TIMEOUT_MSG)) }, env.timeoutMs)
       maybeReady()
     } catch (e) {
       report(e)
@@ -136,7 +136,7 @@ export function startViewer(canvas, cb = {}, opts = {}) {
         p.then((i) => quit(i), () => {})
         await Promise.race([p.catch(() => null), sleep(env.settleMs)])
       }
-      await quit(s.instance)
+      await Promise.race([quit(s.instance), sleep(env.settleMs)])
       s.instance = null
       if (canvas) loseContext(canvas)
     }
@@ -147,6 +147,10 @@ export function startViewer(canvas, cb = {}, opts = {}) {
     done: session,
     get ready() { return s.ready },
     stop() { close(); return session },
+    setFleet(count) {
+      if (!s.ready || s.closed) return
+      s.instance.SendMessage('ShipViewer', 'SetFleet', String(count))
+    },
     setView(view) {
       if (!s.ready || s.closed || !VIEWS.includes(view)) return false
       s.instance.SendMessage('ShipViewer', 'SetView', view)

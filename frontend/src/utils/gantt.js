@@ -1,5 +1,6 @@
 // 간트 좌표 계산 (specs/F05.md). x는 타임라인 영역(왼쪽 열 제외) 기준 px.
-import { addDays, diffDays } from './date.js'
+import { addDays, diffDays, parseD } from './date.js'
+import { holidayName } from './holidays.js'
 
 export const LEFT = 230
 export const ROW = 28
@@ -35,7 +36,7 @@ export function ganttLayout(plans, today, scale) {
   return { start, days, width, timeline: width - LEFT, months, todayX: x(today), bars, x }
 }
 
-/** 선행 종료+1일 지점 → 4px 오른쪽 → 수직 → 후행 시작. 보이는 공정끼리만. */
+/** 선행 종료+1일 지점 → 4px 오른쪽 → 수직 → 후행 시작. 보이는 공정끼리만. {d, from, to}로 돌려준다. */
 export function depPaths(deps, plans, layout, scale) {
   const rows = new Map(plans.map((p, i) => [p.plan_id, { p, i }]))
   const out = []
@@ -46,7 +47,19 @@ export function depPaths(deps, plans, layout, scale) {
     const x1 = layout.x(a.p.plan_end_dt) + scale
     const y1 = a.i * ROW + ROW / 2
     const y2 = b.i * ROW + ROW / 2
-    out.push(`M${x1} ${y1}H${x1 + 4}V${y2}H${layout.x(b.p.plan_start_dt)}`)
+    out.push({ d: `M${x1} ${y1}H${x1 + 4}V${y2}H${layout.x(b.p.plan_start_dt)}`, from: d.pred_plan_id, to: d.plan_id })
+  }
+  return out
+}
+
+/** 쉬는 날(명세 외 요청 기능): 토요일 sat, 일요일 sun, 공휴일 hol(주말과 겹치면 hol). x는 타임라인 기준 px. */
+export function offDays(layout, scale) {
+  const out = []
+  for (let i = 0; i < layout.days; i++) {
+    const date = addDays(layout.start, i)
+    const name = holidayName(date)
+    const dow = new Date(parseD(date)).getUTCDay()
+    if (name || dow === 0 || dow === 6) out.push({ date, x: i * scale, kind: name ? 'hol' : dow === 0 ? 'sun' : 'sat', name })
   }
   return out
 }

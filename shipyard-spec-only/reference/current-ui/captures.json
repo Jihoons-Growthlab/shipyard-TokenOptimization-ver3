@@ -1,0 +1,266 @@
+[
+  {
+    "name": "login",
+    "file": "login.png",
+    "note": "로그인 초기 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:14.112Z"
+  },
+  {
+    "name": "dashboard",
+    "file": "dashboard.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:15.488Z"
+  },
+  {
+    "name": "hull-list",
+    "file": "hull-list.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:18.020Z"
+  },
+  {
+    "name": "hull-info",
+    "file": "hull-info.png",
+    "note": "호선 상세 기본정보",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:19.455Z"
+  },
+  {
+    "name": "hull-milestones",
+    "file": "hull-milestones.png",
+    "note": "주요일정",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:20.467Z"
+  },
+  {
+    "name": "hull-blocks",
+    "file": "hull-blocks.png",
+    "note": "블록 구성",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:21.502Z"
+  },
+  {
+    "name": "hull-summary",
+    "file": "hull-summary.png",
+    "note": "연계 현황",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:22.423Z"
+  },
+  {
+    "name": "hull-3d",
+    "file": "hull-3d.png",
+    "note": "3D 보기",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:35.298Z"
+  },
+  {
+    "name": "plan-gantt",
+    "file": "plan-gantt.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:36.787Z"
+  },
+  {
+    "name": "progress",
+    "file": "progress.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:37.827Z"
+  },
+  {
+    "name": "progress-hover",
+    "file": "progress-hover.png",
+    "note": "공정 실적 실제 이력 호버",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:38.775Z"
+  },
+  {
+    "name": "progress-selected",
+    "file": "progress-selected.png",
+    "note": "선택 공정의 실적 입력과 이력",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:38.941Z"
+  },
+  {
+    "name": "dwg-list",
+    "file": "dwg-list.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:40.019Z"
+  },
+  {
+    "name": "drawing-detail",
+    "file": "drawing-detail.png",
+    "note": "도면 리비전과 예시 PDF",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:41.333Z"
+  },
+  {
+    "name": "dwg-approval",
+    "file": "dwg-approval.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:42.416Z"
+  },
+  {
+    "name": "user-mgmt",
+    "file": "user-mgmt.png",
+    "note": "현재 데모 관리자 화면 · 연락처/생년월일은 시연 정보로 마스킹",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:43.468Z"
+  },
+  {
+    "name": "usage-log",
+    "file": "usage-log.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:44.540Z"
+  },
+  {
+    "name": "inquiry",
+    "file": "inquiry.png",
+    "note": "현재 데모 관리자 화면",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:45.634Z"
+  },
+  {
+    "name": "manual",
+    "file": "manual.png",
+    "note": "상단 매뉴얼 버튼과 화면별 안내",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:47.362Z"
+  },
+  {
+    "name": "chat",
+    "file": "chat.png",
+    "note": "빠른 질문 및 건의·문의·보고서·매뉴얼",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:47.692Z"
+  },
+  {
+    "name": "chat-hulls",
+    "file": "chat-hulls.png",
+    "note": "MCP 호선 정보 선택",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:48.877Z"
+  },
+  {
+    "name": "chat-drawings",
+    "file": "chat-drawings.png",
+    "note": "MCP 도면 정보 선택",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:50.021Z"
+  },
+  {
+    "name": "chat-progress",
+    "file": "chat-progress.png",
+    "note": "MCP 공정 실적 선택",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:51.168Z"
+  },
+  {
+    "name": "chat-feedback",
+    "file": "chat-feedback.png",
+    "note": "건의 접수 모드",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:10:51.312Z"
+  },
+  {
+    "name": "chat-report",
+    "error": "locator.waitFor: Timeout 30000ms exceeded."
+  },
+  {
+    "name": "demo-user",
+    "file": "demo-user.png",
+    "note": "데모 사용자 전환 후 메뉴와 권한",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "captured": "2026-11-13T11:11:21.742Z"
+  },
+  {
+    "name": "mobile-user",
+    "file": "mobile-user.png",
+    "note": "현재 모바일 사용자 화면. 배치 제약은 개선 대상과 구분",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "captured": "2026-11-13T11:11:21.796Z"
+  }
+]

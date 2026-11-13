@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Response
 
 from ..db import get_db
 from ..deps import current_user, require
-from ..schemas import LinkDrawingIn, PlanIn, PredsIn
+from ..schemas import LinkDrawingIn, PlanIn, PredsIn, ScheduleIn
 from ..services import plans
 from ..services.common import VIEW, WRITE
 
@@ -40,6 +40,11 @@ def update_plan(plan_id: int, body: PlanIn, _=Depends(W), conn=Depends(get_db)):
     data = body.given()
     data.setdefault("confirm_late_preds", False)
     return plans.update_plan(conn, plan_id, data)
+
+
+@router.patch("/plans/{plan_id}/schedule")
+def reschedule(plan_id: int, body: ScheduleIn, _=Depends(W), conn=Depends(get_db)):
+    return plans.reschedule(conn, plan_id, body.plan_start_dt, body.plan_end_dt, body.confirm_late_preds)
 
 
 @router.delete("/plans/{plan_id}", status_code=204)
